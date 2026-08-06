@@ -13,7 +13,7 @@ window.MHDC_CONFIG = {
      (project terpisah dari yang klinik)
      Apps Script > Deploy > Manage deployments > salin "Web app URL"
      ------------------------------------------------------------------ */
-  API_URL: "",
+  API_URL: "https://script.google.com/macros/s/AKfycbwLGMEMZ6RhNGj2a6bToh_GnBB0mPHffyh1RRqCHMxtlfHqg6XbooLKL65xiN4kKvxC4w/exec",
 
   /* 2) Alamat halaman rapor event di GitHub Pages.
         Sesuaikan dengan nama repo yang Mas buat, dan akhiri dengan '?id='
