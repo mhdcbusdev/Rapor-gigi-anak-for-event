@@ -193,19 +193,16 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
         </div>
         <div class="f">
           <label class="req" for="domisili">Domisili</label>
-          <input type="text" id="domisili" data-key="Domisili" data-req list="daftarDomisili" placeholder="Contoh: BSD, Bekasi, Depok">
-          <datalist id="daftarDomisili"></datalist>
+          <input type="text" id="domisili" data-key="Domisili" data-req placeholder="Contoh: BSD, Bekasi, Depok">
           <div class="err-msg">Wajib diisi.</div>
         </div>
         <div class="f">
           <label for="asuransi">Asuransi <span class="hint">(opsional)</span></label>
-          <input type="text" id="asuransi" data-key="Asuransi" list="daftarAsuransi" placeholder="Contoh: Zurich, Inhealth">
-          <datalist id="daftarAsuransi"></datalist>
+          <input type="text" id="asuransi" data-key="Asuransi" placeholder="Contoh: Zurich, Inhealth">
         </div>
         <div class="f">
           <label class="req" for="event">Nama event</label>
-          <input type="text" id="event" data-key="Event" data-req list="daftarEvent" placeholder="Contoh: Dental Check Edukita BSD">
-          <datalist id="daftarEvent"></datalist>
+          <input type="text" id="event" data-key="Event" data-req placeholder="Contoh: Dental Check Edukita BSD">
           <div class="err-msg">Wajib diisi.</div>
         </div>
         <div class="f">
@@ -348,24 +345,6 @@ if(!window.MHDC_CONFIG){
   });
 }
 
-
-// Saran isian (muncul saat mengetik). Boleh ditambah/dikurangi.
-const SARAN_EVENT = [
-  "Dental Check Edukita BSD","Dental Check Edukita Open House","Dental Check Cikal Fest",
-  "Dental Check Main Story Cilandak","Dental Check Main Story Setiabudi",
-  "Dental Check Kids Healthy Living Program","Dental Check Magenta Residence Bekasi",
-  "Dental Check Baby Booth Camp by Play at Sora","Dental Check Maybank",
-  "Dental Check National Leadership Camp 2026","Minang Kids Club","Toyota Kalla x Medikids"
-];
-const SARAN_DOMISILI = [
-  "Jakarta","Jakarta Selatan","Jakarta Timur","Jakarta Barat","Jakarta Utara","Jakarta Pusat",
-  "BSD","Tangerang","Tangerang Selatan","Alam Sutera","Serpong","Bekasi","Depok","Bogor",
-  "Cikarang","Cilegon","Bandung","Surabaya","Makassar"
-];
-const SARAN_ASURANSI = [
-  "Zurich","Inhealth","Prudential","Astralife","BPJS","BNI Life","Meditap","Admedika",
-  "Sinarmas","Reliance","AIA","Allianz","Sequis","Manulife","Garda Medika","Mega Insurance"
-];
 
 // Penjelasan otomatis mengikuti Kondisi Gigi Secara Umum (kolom Penjelasan_Hidden)
 const PENJELASAN = {
@@ -524,18 +503,6 @@ function rapikanNomorHP(v){
   if(s.startsWith("62")) return s;
   return "62"+s.replace(/^0+/,"");
 }
-
-/* ---------- saran isian ---------- */
-function isiSaran(idList, daftar){
-  const dl=$(idList);
-  daftar.forEach(v=>{
-    const o=document.createElement("option");
-    o.value=v; dl.appendChild(o);
-  });
-}
-isiSaran("#daftarEvent", SARAN_EVENT);
-isiSaran("#daftarDomisili", SARAN_DOMISILI);
-isiSaran("#daftarAsuransi", SARAN_ASURANSI);
 
 /* ---------- radio & checkbox ---------- */
 $$(".opts[data-key]").forEach(box=>{
