@@ -13,12 +13,12 @@ window.MHDC_CONFIG = {
      (project terpisah dari yang klinik)
      Apps Script > Deploy > Manage deployments > salin "Web app URL"
      ------------------------------------------------------------------ */
-  API_URL: "https://script.google.com/macros/s/AKfycbwLGMEMZ6RhNGj2a6bToh_GnBB0mPHffyh1RRqCHMxtlfHqg6XbooLKL65xiN4kKvxC4w/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbzYz26RCIAawdlys_7cJP1-HNyDsBOZKC4OG9L9a2EwIsJOEneq1BEq2XkRjoqisABv-A/exec",
 
   /* 2) Alamat halaman rapor event di GitHub Pages.
         Sesuaikan dengan nama repo yang Mas buat, dan akhiri dengan '?id='
         Harus sama dengan RAPOR_BASE di watzap.gs event. */
-  RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-Gigi-Event/?id=",
+  RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id=",
 
   /* 3) Gambar di halaman rapor (upload juga ke repo event ini) */
   GAMBAR_JUDUL: "Judul Rapor Gigi.png",
