@@ -719,16 +719,24 @@ function render(d){
   });
 
   /* ---- gambar judul di paling atas ---- */
-  const fileJudul = (LANG==="en" && CONFIG.GAMBAR_JUDUL_EN) ? CONFIG.GAMBAR_JUDUL_EN : CONFIG.GAMBAR_JUDUL;
-  if(fileJudul){
+  // Judul Inggris dipakai kalau disediakan; kalau gagal dimuat, otomatis
+  // mundur ke judul Indonesia, lalu ke tulisan biasa.
+  const antrianJudul = [];
+  if(LANG==="en" && CONFIG.GAMBAR_JUDUL_EN) antrianJudul.push(CONFIG.GAMBAR_JUDUL_EN);
+  if(CONFIG.GAMBAR_JUDUL) antrianJudul.push(CONFIG.GAMBAR_JUDUL);
+  if(antrianJudul.length){
     const jd=$("#gambarJudul");
-    // tulisan hanya disembunyikan kalau gambarnya benar-benar berhasil dimuat
+    let ke=0;
     jd.addEventListener("load",()=>{
       jd.classList.remove("hide");
       $("#ttlBadge").classList.add("hide");
       $("#ttlTeks").classList.add("hide");
     });
-    jd.src=fileJudul.replace(/ /g,"%20");
+    jd.addEventListener("error",()=>{
+      ke++;
+      if(ke < antrianJudul.length) jd.src=antrianJudul[ke].replace(/ /g,"%20");
+    });
+    jd.src=antrianJudul[0].replace(/ /g,"%20");
   }
 
   /* ---- gambar gigi dari file (kalau disediakan) ---- */
