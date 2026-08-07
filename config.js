@@ -13,18 +13,18 @@ window.MHDC_CONFIG = {
      (project terpisah dari yang klinik)
      Apps Script > Deploy > Manage deployments > salin "Web app URL"
      ------------------------------------------------------------------ */
-  API_URL: "https://script.google.com/macros/s/AKfycbzCY3qJxlDo2XLEyz8J8D8uF37QCQEN4xj_WetV-YKofSY6gCNcEFdvSDAmOLzILVAP/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbwKQt62Q4z4iY7BbdsVwZUr3qrQcqltFFqigvr2bzRTsiswdMGItr5N-1EUjTsi35Ggig/exec",
 
   /* 2) Alamat halaman rapor event di GitHub Pages.
         Sesuaikan dengan nama repo yang Mas buat, dan akhiri dengan '?id='
         Harus sama dengan RAPOR_BASE di watzap.gs event. */
   RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id=",
 
-  /* 3) Gambar di halaman rapor (upload juga ke repo event ini).
-        GAMBAR_JUDUL_EN dipakai kalau rapornya Bahasa Inggris.
-        Kalau dikosongkan, yang Indonesia yang dipakai untuk dua-duanya. */
+  /* 3) Gambar di halaman rapor (upload ke repo ini juga).
+        GAMBAR_JUDUL_EN hanya diisi kalau nanti ada gambar judul khusus
+        Bahasa Inggris. Dikosongkan = pakai GAMBAR_JUDUL untuk dua-duanya. */
   GAMBAR_JUDUL:    "Judul Rapor Gigi.png",
-  GAMBAR_JUDUL_EN: "Judul Dental Report.png",
+  GAMBAR_JUDUL_EN: "Judul Rapor Gigi.png",
   GAMBAR_GIGI:     "Gambar Rapor Gigi.png",
 
   /* 4) Peta gigi berwarna. false = hanya gambar di atas yang tampil */
