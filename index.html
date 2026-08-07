@@ -156,8 +156,8 @@ ul.clean li{margin-bottom:4px;font-size:14px}
 
 <div id="stLoad" class="state">
   <div class="spin"></div>
-  <h2>Membuka rapor gigi…</h2>
-  <p>Mohon tunggu sebentar.</p>
+  <h2 id="loadJudul">Membuka rapor gigi…</h2>
+  <p id="loadTeks">Mohon tunggu sebentar.</p>
 </div>
 
 <div id="stErr" class="state hide">
@@ -199,46 +199,46 @@ ul.clean li{margin-bottom:4px;font-size:14px}
   <!-- ================= HALAMAN 2 ================= -->
   <div class="page">
     <div class="brand">Medikids</div>
-    <div class="ttl"><div class="big sm">✦ Pesan Dari Dokter ✦</div></div>
+    <div class="ttl"><div class="big sm" id="jdlDokter">✦ Pesan Dari Dokter ✦</div></div>
 
     <div class="halo" id="halo"></div>
 
-    <div class="center"><span class="pill navy">Ini Pesan Dari Dokter!</span></div>
+    <div class="center"><span class="pill navy" id="pilPesan">Ini Pesan Dari Dokter!</span></div>
     <div id="pesan"></div>
 
     <div id="blokPasca">
-      <div class="center"><span class="pill">Instruksi Pasca Tindakan</span></div>
+      <div class="center"><span class="pill" id="pilPasca">Instruksi Pasca Tindakan</span></div>
       <div id="pasca"></div>
     </div>
 
     <hr class="hr">
 
-    <div class="ttl"><div class="big sm">✦ Rekomendasi Dari Dokter ✦</div></div>
+    <div class="ttl"><div class="big sm" id="jdlRekom">✦ Rekomendasi Dari Dokter ✦</div></div>
 
     <div id="blokRekom">
-      <h3 style="font-size:17px;color:var(--red);margin-bottom:2px">Perawatan Gigi Lanjutan</h3>
+      <h3 id="jdlLanjutan" style="font-size:17px;color:var(--red);margin-bottom:2px">Perawatan Gigi Lanjutan</h3>
       <div id="rekom"></div>
     </div>
 
     <div id="blokNext" style="margin-top:20px">
-      <h3 style="font-size:17px;color:var(--red);margin-bottom:2px">Jadwal Kunjungan Berikutnya</h3>
-      <div style="font-size:15px;font-weight:600">Disarankan kembali pada <b id="nextDate"></b></div>
+      <h3 id="jdlNext" style="font-size:17px;color:var(--red);margin-bottom:2px">Jadwal Kunjungan Berikutnya</h3>
+      <div style="font-size:15px;font-weight:600"><span id="jdlNextTeks">Disarankan kembali pada</span> <b id="nextDate"></b></div>
     </div>
   </div>
 
   <!-- ================= HALAMAN 3 ================= -->
   <div class="page">
     <div class="brand">Medikids</div>
-    <div class="ttl"><div class="big sm">Tips Menjaga Kesehatan<br>Gigi dan Gusi Anak</div></div>
+    <div class="ttl"><div class="big sm" id="jdlTips">Tips Menjaga Kesehatan<br>Gigi dan Gusi Anak</div></div>
 
     <div class="tipbox">
-      <h3>Bersihkan gigi setiap hari</h3>
-      <p>Sikat gigi anak 2x sehari dengan pasta gigi berfluoride.</p>
+      <h3 id="tipUtamaJdl">Bersihkan gigi setiap hari</h3>
+      <p id="tipUtamaTeks">Sikat gigi anak 2x sehari dengan pasta gigi berfluoride.</p>
     </div>
 
     <div class="tipwrap">
       <div class="center" style="margin-bottom:8px">
-        <span style="font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--red);font-size:17px">TIPS LAINNYA</span>
+        <span style="font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--red);font-size:17px" id="jdlTipsLain">TIPS LAINNYA</span>
       </div>
       <div id="tips"></div>
     </div>
@@ -246,7 +246,7 @@ ul.clean li{margin-bottom:4px;font-size:14px}
     <div class="prod">
       <div class="center" style="margin-bottom:12px">
         <span style="font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--red);font-size:14.5px">
-          PRODUK TAMBAHAN UNTUK PERLINDUNGAN GIGI ANAK</span>
+          <span id="jdlProduk">PRODUK TAMBAHAN UNTUK PERLINDUNGAN GIGI ANAK</span></span>
       </div>
       <div class="row" id="produk"></div>
     </div>
@@ -255,7 +255,7 @@ ul.clean li{margin-bottom:4px;font-size:14px}
   <!-- ================= HALAMAN 4 ================= -->
   <div class="page" id="page4">
     <div class="brand">Medikids</div>
-    <div class="ttl"><div class="big sm">✦ Apa yang Harus Segera Dilakukan? ✦</div></div>
+    <div class="ttl"><div class="big sm" id="jdlAksi">✦ Apa yang Harus Segera Dilakukan? ✦</div></div>
     <div id="todo"></div>
   </div>
 
@@ -291,7 +291,8 @@ const CONFIG = {
   // 3) Gambar judul di paling atas halaman rapor (menggantikan tulisan
   //    "GOOD JOB! / RAPOR GIGI"). Upload filenya ke repo, tulis namanya di sini.
   //    Kosongkan ("") kalau mau kembali ke tulisan biasa.
-  GAMBAR_JUDUL: "Judul Rapor Gigi.png",
+  GAMBAR_JUDUL:    "Judul Rapor Gigi.png",
+  GAMBAR_JUDUL_EN: "Judul Dental Report.png",
 
   // 4) Gambar gigi (odontogram) yang ditampilkan ke orang tua.
   //    Upload file gambarnya ke repo GitHub yang sama, lalu tulis nama filenya
@@ -343,42 +344,216 @@ const $ = (s,r=document)=>r.querySelector(s);
 const LOGO_MEDIKIDS = "data:image/png;base64,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";
 const NS = "http://www.w3.org/2000/svg";
 
-const PENJELASAN = {
-  "Kondisi Gigi Baik Sekali":"Gigi anak sangat sehat! Tidak ada masalah seperti gigi berlubang, plak, atau karang gigi. Kebersihan mulut terjaga dengan baik, dan gusi sehat.",
-  "Kondisi Gigi Cukup Baik":"Gigi dalam kondisi yang cukup baik, namun ada sedikit plak atau tanda awal gigi berlubang yang perlu diperhatikan agar tidak berkembang lebih lanjut.",
-  "Kondisi Gigi Kurang Baik":"Gigi terdapat beberapa masalah, seperti karang gigi atau gigi berlubang yang perlu ditangani segera untuk mencegah kerusakan lebih lanjut.",
-  "Kondisi Gigi Perlu Perhatian":"Gigi perlu perawatan segera. Ada masalah serius seperti gigi berlubang parah, peradangan gusi, atau sisa akar yang bisa menyebabkan komplikasi jika tidak diatasi."
+/* Terjemahan isi kolom: Indonesia -> Inggris.
+   Isi spreadsheet selalu Bahasa Indonesia; halaman ini yang menerjemahkan
+   kalau rapornya dipilih Bahasa Inggris. Nilai yang tidak ada di daftar
+   ditampilkan apa adanya (mis. data lama Raffles yang sudah Inggris). */
+const KAMUS_EN = {
+  "Kondisi Gigi Baik Sekali":
+    "Excellent!",
+  "Kondisi Gigi Cukup Baik":
+    "Doing Great!",
+  "Kondisi Gigi Kurang Baik":
+    "Needs a Little Care",
+  "Kondisi Gigi Perlu Perhatian":
+    "Needs Extra Attention",
+  "Rapi dan Normal : Gigi tertata lurus dan tidak ada tanda-tanda kelainan.":
+    "Good Alignment: Teeth are developing normally and appear well aligned.",
+  "Gigi Tidak Rapi (Maloklusi): Gigi tidak tersusun dengan baik, misalnya berjejal, terlalu maju, atau tidak sejajar.":
+    "Alignment Needs Attention: Some teeth are not developing in their ideal position and may benefit from monitoring or future orthodontic evaluation.",
+  "Tidak Ada Karang Gigi : Gigi bersih tanpa penumpukan plak atau karang gigi":
+    "No Tartar: Teeth are clean and healthy, with no signs of plaque or tartar buildup.",
+  "Karang Gigi Ringan : Plak yang mengeras mulai terbentuk di sekitar gusi dan sela-sela gigi":
+    "Mild Tartar: A small amount of tartar is beginning to form around the teeth and gums.",
+  "Karang Gigi Sedang : Karang terlihat jelas di bagian leher gigi dan mulai menyebar ke bawah garis gusi":
+    "Moderate Tartar: Tartar buildup is noticeable and professional cleaning is recommended to help maintain healthy teeth and gums.",
+  "Karang Gigi Parah : Karang menutupi sebagian besar permukaan gigi dan masuk ke area di bawah gusi.":
+    "Severe Tartar: A significant amount of tartar is present. Professional cleaning is strongly recommended to help protect the teeth and gums.",
+  "Tetap jaga kebersihan gigi anak dengan menyikat gigi dua kali sehari dan jangan lupa periksa rutin setiap 6 bulan ya!":
+    "Keep your child's teeth healthy by brushing twice a day and scheduling regular dental check-ups every six months.",
+  "Gigi anak butuh perhatian khusus agar selalu sehat. Ayo ajak anak rajin sikat gigi sebelum tidur dan kurangi konsumsi gula.":
+    "Your child's teeth need daily care to stay healthy. Encourage brushing before bedtime and limit sugary foods and drinks.",
+  "Hasil pemeriksaan menunjukkan ada beberapa hal yang perlu segera ditangani. Disarankan untuk menjadwalkan kunjungan berikutnya agar bisa dilakukan perawatan.":
+    "The dental check-up identified a few areas that require attention. We recommend scheduling a follow-up visit to begin the necessary treatment.",
+  "Tambal Gigi":
+    "Dental Filling",
+  "Scaling Gigi":
+    "Scaling (Tartar Cleaning)",
+  "Topical Application Fluoride":
+    "Topical Fluoride Application",
+  "Pencabutan Gigi":
+    "Tooth Extraction",
+  "Perawatan Ortodonti/Pre-Ortodonti":
+    "Orthodontic / Pre-Orthodontic Treatment",
+  "Step 1 (0-2 Tahun)":
+    "Step 1 (Ages 0-2)",
+  "Step 2 (3-5 Tahun)":
+    "Step 2 (Ages 3-5)",
+  "Step 3 (6-9 Tahun)":
+    "Step 3 (Ages 6-9)",
+  "> 9 Tahun":
+    "Ages 9+",
+  "Baby (Non Fluoride)":
+    "Baby (Fluoride-Free)",
+  "Step 1 (0-5 Tahun)":
+    "Step 1 (Ages 0-5)",
+  "Step 2 (6-12 Tahun)":
+    "Step 2 (Ages 6-12)",
+  "Probiotik":
+    "Probiotic",
+  "Sikat Interdental":
+    "Interdental Brush",
 };
 
-const TIPS = [
-  ["Biasakan memeriksa mulut anak","Angkat bibir anak secara perlahan untuk melihat kondisi gigi dan gusinya. Lakukan ini secara rutin agar Anda bisa tahu jika ada perubahan."],
-  ["Ajak anak berkumur air putih setelah minum obat","Beberapa obat bisa membuat mulut kering, dan mulut kering bisa meningkatkan risiko gigi berlubang."],
-  ["Kurangi makanan dan minuman manis","Hindari jus, soda, dan camilan manis. Cek label makanan, dan batasi bahan yang namanya berakhiran \u201c-ose\u201d seperti fructose, sucrose, dll."],
-  ["Jangan berbagi sendok, gelas, atau sikat gigi","Bakteri penyebab gigi berlubang bisa menular dari orang tua ke anak. Jika anak pakai empeng, jangan dicelup ke gula atau madu. Bersihkan hanya dengan air."],
-  ["Gunakan gelas biasa, bukan botol dot","Sajikan jus atau susu dalam gelas terbuka. Jika anak tidur dengan botol, isinya harus air putih saja."]
-];
-
-const KETERANGAN_PRODUK = {
-  "Tooth Mousse":"Krim pelindung gigi yang bantu memperkuat enamel dan mencegah gigi berlubang.",
-  "Probiotik":"Menjaga imunitas rongga mulut, mengurangi plak dan bau mulut, serta membantu mencegah gigi berlubang.",
-  "Baby (Non Fluoride)":"Pasta gigi tanpa fluoride, aman untuk anak yang belum bisa berkumur.",
-  "Step 1 (0-5 Tahun)":"Pasta gigi berfluoride dengan kadar sesuai usia anak.",
-  "Step 2 (6-12 Tahun)":"Pasta gigi berfluoride dengan kadar sesuai usia anak.",
-  "Step 1 (0-2 Tahun)":"Sikat gigi dengan kepala dan bulu halus sesuai usia anak.",
-  "Step 2 (3-5 Tahun)":"Sikat gigi dengan kepala dan bulu halus sesuai usia anak.",
-  "Step 3 (6-9 Tahun)":"Sikat gigi dengan kepala dan bulu halus sesuai usia anak.",
-  "> 9 Tahun":"Sikat gigi dengan kepala dan bulu halus sesuai usia anak.",
-  "Dental Floss":"Membantu membersihkan sela-sela gigi yang tidak terjangkau sikat gigi.",
-  "Dental Floss Pick":"Membantu membersihkan sela-sela gigi yang tidak terjangkau sikat gigi.",
-  "Sikat Interdental":"Membantu membersihkan sela-sela gigi yang tidak terjangkau sikat gigi."
+/* Penjelasan versi Inggris, mengikuti kondisi gigi */
+const PENJELASAN_EN = {
+  "Excellent!": "The teeth and gums are healthy and strong. Keep up the great brushing habits and regular dental check-ups to maintain a healthy, beautiful smile.",
+  "Doing Great!": "The teeth are in good condition. With consistent brushing and regular dental check-ups, your child’s smile can stay healthy and bright.",
+  "Needs a Little Care": "We found a few areas that need attention. With good brushing habits and timely dental care, we can help keep your child’s smile healthy and strong.",
+  "Needs Extra Attention": "Some areas require prompt dental attention. Early treatment can help prevent further problems and keep your child smiling with confidence."
 };
 
-const PRODUK_DEFAULT = [
-  ["Tooth Mousse","Krim pelindung gigi yang bantu memperkuat enamel dan mencegah gigi berlubang."],
-  ["Probiotik","Sebagai imunitas pada rongga mulut, mengurangi plak, bau mulut hingga mencegah gigi berlubang."]
-];
+function keEN(v){
+  const t=String(v||"").trim();
+  if(!t) return t;
+  if(KAMUS_EN[t]) return KAMUS_EN[t];
+  // kolom isian banyak (dipisah koma) diterjemahkan satu per satu
+  if(t.indexOf(",")!==-1){
+    return t.split(",").map(x=>{const y=x.trim(); return KAMUS_EN[y]||y;}).join(", ");
+  }
+  return t;
+}
+/* Menerjemahkan seluruh data sekali di awal render */
+function terjemahkan(d){
+  const kolom=["Kondisi Gigi Secara Umum","Susunan Gigi ","Susunan Gigi","Karang Gigi",
+    "Pesan Dokter","Rekomendasi Perawatan Lanjutan","Rekomendasi Sikat Gigi",
+    "Rekomendasi Pasta Gigi","Rekomendasi Vitamin Gigi","Rekomendasi Produk Gigi Lainnya"];
+  kolom.forEach(k=>{ if(d[k]!==undefined) d[k]=keEN(d[k]); });
+  const kond=d["Kondisi Gigi Secara Umum"];
+  if(PENJELASAN_EN[kond]) d["Penjelasan_Hidden"]=PENJELASAN_EN[kond];
+  return d;
+}
 
-const BULAN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+/* ---------------- teks dua bahasa ---------------- */
+let LANG = "id";
+function tx(k){ return (T[LANG] && T[LANG][k] !== undefined) ? T[LANG][k] : T.id[k]; }
+
+const T = {
+  id: {
+    loadJudul:"Membuka rapor gigi…", loadTeks:"Mohon tunggu sebentar.",
+    errJudul:"Rapor tidak ditemukan",
+    errTeks:"Link mungkin salah atau sudah kedaluwarsa. Silakan hubungi klinik Medikids tempat anak Anda diperiksa.",
+    lNama:"Nama", lLahir:"Tanggal Lahir", lPeriksa:"Tanggal Pemeriksaan", lEvent:"Event",
+    kondisiLabel:"Hasil Pemeriksaan Gigi Secara Umum", kondisiKosong:"Hasil Pemeriksaan",
+    tBerlubang:"Gigi Berlubang", tSisaAkar:"Sisa Akar", tDicabut:"Gigi Perlu Dicabut",
+    tKarang:"Karang Gigi", tSusunan:"Susunan Gigi", tGigi:"Gigi : ",
+    tBaikJdl:"Hasil Baik",
+    tBaikTeks:"Tidak ditemukan gigi berlubang, sisa akar, maupun karang gigi. Pertahankan ya!",
+    jdlDokter:"✦ Pesan Dari Dokter ✦", pilPesan:"Ini Pesan Dari Dokter!",
+    haloAwal:"Hallo Parents! Perkenalkan saya Dokter Gigi",
+    haloAkhir:(n)=>"yang bertugas memeriksa gigi "+n+" hari ini.",
+    pesanBawaan:"Terima kasih sudah menjaga kesehatan gigi anak. Jangan lupa periksa rutin setiap 6 bulan ya!",
+    pilPasca:"Instruksi Pasca Tindakan", jdlPasca:"Instruksi setelah perawatan",
+    jdlRekom:"✦ Rekomendasi Dari Dokter ✦", jdlLanjutan:"Perawatan Gigi Lanjutan",
+    rekomAwal:"Direkomendasikan untuk melakukan :", catatan:"Catatan tambahan : ",
+    jdlNext:"Jadwal Kunjungan Berikutnya", jdlNextTeks:"Disarankan kembali pada",
+    jdlTindakan:"Tindakan hari ini", tPenambalan:"Penambalan gigi",
+    tPencabutan:"Pencabutan gigi", tAkar:"Perawatan saluran akar gigi", tLainnya:"Tindakan lainnya",
+    jdlTips:"Tips Menjaga Kesehatan<br>Gigi dan Gusi Anak",
+    tipUtamaJdl:"Bersihkan gigi setiap hari",
+    tipUtamaTeks:"Sikat gigi anak 2x sehari dengan pasta gigi berfluoride.",
+    jdlTipsLain:"TIPS LAINNYA", jdlProduk:"PRODUK TAMBAHAN UNTUK PERLINDUNGAN GIGI ANAK",
+    jdlAksi:"✦ Apa yang Harus Segera Dilakukan? ✦",
+    btnPrint:"Simpan / cetak rapor (PDF)", btnCopy:"Salin link rapor", btnCopyOk:"Link tersalin",
+    btnWa:"Tanya klinik via WhatsApp",
+    caraPrint:'Cara simpan jadi PDF: tekan <b>Simpan / cetak rapor</b> &rarr; pada pilihan printer, pilih <b>Save as PDF</b> / <b>Simpan sebagai PDF</b>.',
+    foot:"Rapor ini dibuat otomatis dari hasil pemeriksaan di booth Medikids.<br>Untuk pertanyaan lebih lanjut, silakan hubungi tim Medikids.",
+    video:"Tonton Video Edukasi, Klik Disini",
+    tips:[
+      ["Biasakan memeriksa mulut anak","Angkat bibir anak secara perlahan untuk melihat kondisi gigi dan gusinya. Lakukan ini secara rutin agar Anda bisa tahu jika ada perubahan."],
+      ["Ajak anak berkumur air putih setelah minum obat","Beberapa obat bisa membuat mulut kering, dan mulut kering bisa meningkatkan risiko gigi berlubang."],
+      ["Kurangi makanan dan minuman manis","Hindari jus, soda, dan camilan manis. Cek label makanan, dan batasi bahan yang namanya berakhiran \u201c-ose\u201d seperti fructose, sucrose, dll."],
+      ["Jangan berbagi sendok, gelas, atau sikat gigi","Bakteri penyebab gigi berlubang bisa menular dari orang tua ke anak. Jika anak pakai empeng, jangan dicelup ke gula atau madu. Bersihkan hanya dengan air."],
+      ["Gunakan gelas biasa, bukan botol dot","Sajikan jus atau susu dalam gelas terbuka. Jika anak tidur dengan botol, isinya harus air putih saja."]
+    ],
+    produk:[
+      ["Tooth Mousse","Krim pelindung gigi yang bantu memperkuat enamel dan mencegah gigi berlubang."],
+      ["Probiotik","Sebagai imunitas pada rongga mulut, mengurangi plak, bau mulut hingga mencegah gigi berlubang."]
+    ],
+    aksi:{
+      tambal:["Tambal Gigi yang Berlubang","Gigi berlubang bisa memburuk dengan cepat, menyebabkan nyeri hebat, infeksi, dan merusak gigi lain. Segera lakukan tambal gigi sebelum masalah bertambah parah."],
+      cabut:["Cabut Gigi Susu yang Belum Tanggal","Gigi susu yang belum tanggal, tapi sudah tumbuh gigi baru bisa menyebabkan gigi berdesakan. Segera lakukan pencabutan untuk mencegah susunan gigi berantakan."],
+      akar:["Cabut Sisa Akar","Sisa akar yang tertinggal bisa menyebabkan infeksi serius, bengkak, dan kerusakan pada gusi serta tulang rahang. Segera lakukan pencabutan untuk mencegah komplikasi lebih lanjut."],
+      karang:["Bersihkan Karang Gigi","Penumpukan karang bisa menyebabkan gusi meradang dan infeksi. Jika dibiarkan, gigi bisa goyang atau lepas. Segera lakukan scaling rutin untuk menjaga kesehatan gigi dan gusi."],
+      susunan:["Rapikan dan Luruskan Susunan Gigi","Gigi yang tidak rapi bisa mengganggu fungsi kunyah dan sulit dibersihkan, berisiko menimbulkan masalah lebih lanjut. Segera konsultasikan perawatan Myobrace untuk merapikan gigi anak secara alami sejak dini."]
+    }
+  },
+
+  en: {
+    loadJudul:"Opening dental report…", loadTeks:"Please wait a moment.",
+    errJudul:"Report not found",
+    errTeks:"The link may be incorrect or expired. Please contact the Medikids team.",
+    lNama:"Name", lLahir:"Date of Birth", lPeriksa:"Check-up Date", lEvent:"Event",
+    kondisiLabel:"Your Child's Dental Report", kondisiKosong:"Dental Report",
+    tBerlubang:"Cavities Found", tSisaAkar:"Remaining Tooth Roots", tDicabut:"Teeth That Need Extraction",
+    tKarang:"Tartar Build-up", tSusunan:"Tooth Alignment", tGigi:"Teeth : ",
+    tBaikJdl:"Great Result",
+    tBaikTeks:"No cavities, remaining roots, or tartar were found. Keep up the good work!",
+    jdlDokter:"✦ Dentist's Note ✦", pilPesan:"A Special Note",
+    haloAwal:"Hallo Parents! I'm",
+    haloAkhir:(n)=>"and I had the pleasure of checking "+n+"'s smile today.",
+    pesanBawaan:"Thank you for taking care of your child's teeth. Remember to schedule a check-up every six months!",
+    pilPasca:"After-Care Instructions", jdlPasca:"After-care instructions",
+    jdlRekom:"✦ Your Smile Care Plan ✦", jdlLanjutan:"Next Steps for a Healthy Smile",
+    rekomAwal:"To help keep your child's smile healthy and bright, we recommend:",
+    catatan:"Additional note : ",
+    jdlNext:"Next Visit", jdlNextTeks:"We recommend coming back on",
+    jdlTindakan:"Treatment Done Today", tPenambalan:"Dental filling",
+    tPencabutan:"Tooth extraction", tAkar:"Root canal treatment", tLainnya:"Other treatment",
+    jdlTips:"Tips to Keep Your Child's<br>Teeth and Gums Healthy",
+    tipUtamaJdl:"Clean teeth every day",
+    tipUtamaTeks:"Brush your child's teeth twice a day with fluoride toothpaste.",
+    jdlTipsLain:"MORE TIPS", jdlProduk:"SMILE CARE PRODUCT RECOMMENDATIONS",
+    jdlAksi:"✦ What Should Be Done Next? ✦",
+    btnPrint:"Save / print report (PDF)", btnCopy:"Copy report link", btnCopyOk:"Link copied",
+    btnWa:"Chat with us on WhatsApp",
+    caraPrint:'To save as PDF: tap <b>Save / print report</b> &rarr; in the printer list, choose <b>Save as PDF</b>.',
+    foot:"This report was generated automatically from the check-up at the Medikids booth.<br>For further questions, please contact the Medikids team.",
+    video:"Watch Educational Video, Click Here",
+    tips:[
+      ["Check your child's mouth regularly","Gently lift your child's lip to look at the teeth and gums. Doing this regularly helps you notice any changes early."],
+      ["Rinse with water after taking medicine","Some medicines can cause a dry mouth, and a dry mouth increases the risk of cavities."],
+      ["Cut back on sugary food and drinks","Avoid juice, soda, and sweet snacks. Check food labels and limit ingredients ending in \u201c-ose\u201d such as fructose and sucrose."],
+      ["Do not share spoons, cups, or toothbrushes","Cavity-causing bacteria can pass from parent to child. If your child uses a pacifier, never dip it in sugar or honey \u2014 clean it with water only."],
+      ["Use an open cup instead of a bottle","Serve juice or milk in an open cup. If your child sleeps with a bottle, it should contain water only."]
+    ],
+    produk:[
+      ["Tooth Mousse","A protective cream that helps strengthen enamel and prevent cavities."],
+      ["Probiotic","Supports immunity in the mouth, reduces plaque and bad breath, and helps prevent cavities."]
+    ],
+    aksi:{
+      tambal:["Cavities Need Care","Cavities can get bigger over time and may cause discomfort. Early treatment helps keep your child's smile healthy and strong."],
+      cabut:["Making Room for New Teeth","Sometimes baby teeth do not fall out on time, making it harder for new teeth to grow properly. Removing them at the right time helps guide healthy tooth development."],
+      akar:["Healthy Gums, Healthy Smile","Remaining roots can affect your child's oral health and comfort. Early treatment helps keep the mouth healthy and prevent future dental problems."],
+      karang:["Keeping Teeth Clean and Healthy","Tartar can build up around the teeth and gums over time. Professional cleaning helps keep your child's teeth and gums clean, healthy, and comfortable."],
+      susunan:["Growing a Beautiful Smile","Teeth that grow in the right position are easier to clean and care for. Early Myobrace consultation may help guide healthy tooth and jaw development."]
+    }
+  }
+};
+
+/* Bahasa diambil dari kolom "Bahasa". Data lama belum punya kolom itu,
+   jadi ditebak dari teks hasil pemeriksaannya. */
+function deteksiBahasa(d){
+  const b=String(d["Bahasa"]||"").trim().toUpperCase();
+  if(b==="EN") return "en";
+  if(b==="ID") return "id";
+  // data lama Raffles belum punya kolom Bahasa — dikenali dari teksnya
+  const gab=[d["Susunan Gigi "]||"", d["Karang Gigi"]||"", d["Kondisi Gigi Secara Umum"]||""].join(" ");
+  return /Alignment|Tartar|Excellent!|Doing Great|Needs a Little Care|Needs Extra Attention/i.test(gab) ? "en" : "id";
+}
+
+const BULAN_ID=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_EN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 /* ---------- penomoran gigi, mengikuti gambar acuan ---------- */
 const PERM_ATAS  = ["18","17","16","15","14","13","12","11","21","22","23","24","25","26","27","28"];
@@ -413,7 +588,10 @@ function tglIndo(v){
   if(!v) return "";
   const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);
   if(!m) return String(v);
-  return parseInt(m[3],10)+" "+BULAN[parseInt(m[2],10)-1]+" "+m[1];
+  const bln=(LANG==="en"?BULAN_EN:BULAN_ID)[parseInt(m[2],10)-1];
+  return LANG==="en"
+    ? bln+" "+parseInt(m[3],10)+", "+m[1]          // August 1, 2018
+    : parseInt(m[3],10)+" "+bln+" "+m[1];          // 1 Agustus 2018
 }
 function usiaDari(iso,acuan){
   if(!iso) return "";
@@ -423,6 +601,10 @@ function usiaDari(iso,acuan){
   if(k.getDate()<l.getDate()) bl--;
   if(bl<0){ th--; bl+=12; }
   if(th<0) return "";
+  if(LANG==="en"){
+    const yy=th+(th===1?" year":" years"), mm=bl+(bl===1?" month":" months");
+    return th>0 ? (bl>0? yy+" "+mm : yy) : mm;
+  }
   return th>0 ? (bl>0? th+" tahun "+bl+" bulan" : th+" tahun") : bl+" bulan";
 }
 function pecah(v){ return String(v||"").split(",").map(s=>s.trim()).filter(Boolean); }
@@ -489,6 +671,11 @@ function tampilError(j,t){
 
 /* ---------- render ---------- */
 function render(d){
+  // bahasa ditentukan lebih dulu, lalu isinya diterjemahkan,
+  // baru nilai-nilainya dibaca di bawah ini
+  LANG = deteksiBahasa(d);
+  if(LANG==="en") d = terjemahkan(d);
+
   const nama      = d["Nama Pasien"]||"-";
   const lahir     = d["Tanggal Lahir Pasien"]||"";
   const periksa   = d["Tanggal Pemeriksaan"]||"";
@@ -499,7 +686,9 @@ function render(d){
   const karang    = d["Karang Gigi"]||"";
   const susunan   = d["Susunan Gigi "]||d["Susunan Gigi"]||"";
 
-  document.title = "Rapor Gigi "+nama+" — Medikids";
+  document.documentElement.lang = LANG;
+  document.title = (LANG==="en" ? "Dental Report " : "Rapor Gigi ")+nama+" — Medikids";
+  pasangTeksStatis();
 
   /* ---- identitas (gaya PDF) ---- */
   const usia=usiaDari(lahir,periksa);
@@ -510,16 +699,16 @@ function render(d){
     row.appendChild(el("span",null,v));
     idt.appendChild(row);
   };
-  baris("Nama", nama);
-  baris("Tanggal Lahir", tglIndo(lahir)+(usia?"  ("+usia+")":""));
-  baris("Tanggal Pemeriksaan", tglIndo(periksa));
-  baris("Event", d["Event"]);
+  baris(tx("lNama"), nama);
+  baris(tx("lLahir"), tglIndo(lahir)+(usia?"  ("+usia+")":""));
+  baris(tx("lPeriksa"), tglIndo(periksa));
+  baris(tx("lEvent"), d["Event"]);
 
   /* ---- kondisi umum ---- */
   const kb=$("#kondisi");
-  kb.appendChild(el("div","l","Hasil Pemeriksaan Gigi Secara Umum"));
-  kb.appendChild(el("div","v", kondisi||"Hasil Pemeriksaan"));
-  const jelas = ada(d["Penjelasan_Hidden"]) ? d["Penjelasan_Hidden"] : PENJELASAN[kondisi];
+  kb.appendChild(el("div","l",tx("kondisiLabel")));
+  kb.appendChild(el("div","v", kondisi||tx("kondisiKosong")));
+  const jelas = d["Penjelasan_Hidden"];
   if(jelas) kb.appendChild(el("div","t",jelas));
 
   /* ---- logo Medikids ---- */
@@ -530,7 +719,8 @@ function render(d){
   });
 
   /* ---- gambar judul di paling atas ---- */
-  if(CONFIG.GAMBAR_JUDUL){
+  const fileJudul = (LANG==="en" && CONFIG.GAMBAR_JUDUL_EN) ? CONFIG.GAMBAR_JUDUL_EN : CONFIG.GAMBAR_JUDUL;
+  if(fileJudul){
     const jd=$("#gambarJudul");
     // tulisan hanya disembunyikan kalau gambarnya benar-benar berhasil dimuat
     jd.addEventListener("load",()=>{
@@ -538,7 +728,7 @@ function render(d){
       $("#ttlBadge").classList.add("hide");
       $("#ttlTeks").classList.add("hide");
     });
-    jd.src=CONFIG.GAMBAR_JUDUL.replace(/ /g,"%20");
+    jd.src=fileJudul.replace(/ /g,"%20");
   }
 
   /* ---- gambar gigi dari file (kalau disediakan) ---- */
@@ -560,21 +750,21 @@ function render(d){
   }
 
   /* ---- temuan ---- */
-  const T=$("#temuan");
-  temuanGigi(T,"Gigi Berlubang",berlubang);
-  temuanGigi(T,"Sisa Akar",sisaAkar);
-  temuanGigi(T,"Gigi Perlu Dicabut",dicabut);
-  if(ada(karang))  temuanTeks(T,"Karang Gigi",karang);
-  if(ada(susunan)) temuanTeks(T,"Susunan Gigi",susunan);
-  if(!T.children.length){
-    temuanTeks(T,"Hasil Baik","Tidak ditemukan gigi berlubang, sisa akar, maupun karang gigi. Pertahankan ya!");
+  const box=$("#temuan");
+  temuanGigi(box,tx("tBerlubang"),berlubang);
+  temuanGigi(box,tx("tSisaAkar"),sisaAkar);
+  temuanGigi(box,tx("tDicabut"),dicabut);
+  if(ada(karang))  temuanTeks(box,tx("tKarang"),karang);
+  if(ada(susunan)) temuanTeks(box,tx("tSusunan"),susunan);
+  if(!box.children.length){
+    temuanTeks(box,tx("tBaikJdl"),tx("tBaikTeks"));
   }
 
   /* ---- tindakan hari ini ---- */
   const tind=pecah(d["Tindakan hari ini"]);
-  const detail=[["Pencabutan gigi",pecah(d["Pencabutan gigi"])],
-                ["Penambalan gigi",pecah(d["Penambalan gigi"])],
-                ["Perawatan saluran akar gigi",pecah(d["Perawatan saluran akar gigi"])]];
+  const detail=[[tx("tPencabutan"),pecah(d["Pencabutan gigi"])],
+                [tx("tPenambalan"),pecah(d["Penambalan gigi"])],
+                [tx("tAkar"),pecah(d["Perawatan saluran akar gigi"])]];
   const tl=d["Tindakan lainnya"];
   if(tind.length || detail.some(x=>x[1].length) || ada(tl)){
     const box=$("#tindakan");
@@ -589,7 +779,7 @@ function render(d){
       box.appendChild(p);
     });
     if(ada(tl)){
-      const p=el("div","kv","Tindakan lainnya : ");
+      const p=el("div","kv",tx("tLainnya")+" : ");
       p.appendChild(el("b",null,tl));
       box.appendChild(p);
     }
@@ -599,15 +789,15 @@ function render(d){
 
   /* ---- halaman 2: pesan dokter ---- */
   const halo=$("#halo");
-  halo.appendChild(el("span",null,"Hallo Parents! Perkenalkan saya Dokter Gigi"));
-  halo.appendChild(el("b",null, namaDokter(d["Nama Dokter"])));
-  halo.appendChild(el("span",null,"yang bertugas memeriksa gigi "+nama+" hari ini."));
+  halo.appendChild(el("span",null,tx("haloAwal")));
+  halo.appendChild(el("b",null, LANG==="en" ? String(d["Nama Dokter"]||"Medikids").trim() : namaDokter(d["Nama Dokter"])));
+  halo.appendChild(el("span",null,tx("haloAkhir")(nama)));
 
   const pb=$("#pesan");
   pecah(d["Pesan Dokter"]).forEach(p=>pb.appendChild(el("div","msgbox",p)));
   if(ada(d["Pesan lainnya"])) pb.appendChild(el("div","msgbox",d["Pesan lainnya"]));
   if(!pb.children.length){
-    pb.appendChild(el("div","msgbox","Terima kasih sudah menjaga kesehatan gigi anak. Jangan lupa periksa rutin setiap 6 bulan ya!"));
+    pb.appendChild(el("div","msgbox",tx("pesanBawaan")));
   }
 
   const pasca=pecah(d["Intruksi Pasca Tindakan"]);
@@ -625,13 +815,13 @@ function render(d){
   if(rek.length || ada(rekLain)){
     const box=$("#rekom");
     if(rek.length){
-      box.appendChild(el("div","kv","Direkomendasikan untuk melakukan :"));
+      box.appendChild(el("div","kv",tx("rekomAwal")));
       const ul=el("ul","clean");
       rek.forEach(r=>ul.appendChild(el("li",null,r)));
       box.appendChild(ul);
     }
     if(ada(rekLain)){
-      const p=el("div","kv","Catatan tambahan : ");
+      const p=el("div","kv",tx("catatan"));
       p.appendChild(el("b",null,rekLain));
       box.appendChild(p);
     }
@@ -647,7 +837,7 @@ function render(d){
 
   /* ---- halaman 3: tips + produk ---- */
   const tb=$("#tips");
-  TIPS.forEach(([j,t])=>{
+  tx("tips").forEach(([j,t])=>{
     const row=el("div","tip");
     row.appendChild(el("div","ck","\u2713"));
     const w=el("div");
@@ -658,16 +848,22 @@ function render(d){
   });
 
   const produkDipilih=[];
-  [["Rekomendasi Sikat Gigi","Sikat gigi"],["Rekomendasi Pasta Gigi","Pasta gigi"],
-   ["Rekomendasi Vitamin Gigi",""],["Rekomendasi Produk Gigi Lainnya",""]].forEach(([k,pre])=>{
+  const labelProduk = LANG==="en"
+    ? [["Rekomendasi Sikat Gigi","Toothbrush"],["Rekomendasi Pasta Gigi","Toothpaste"],
+       ["Rekomendasi Vitamin Gigi",""],["Rekomendasi Produk Gigi Lainnya",""]]
+    : [["Rekomendasi Sikat Gigi","Sikat gigi"],["Rekomendasi Pasta Gigi","Pasta gigi"],
+       ["Rekomendasi Vitamin Gigi",""],["Rekomendasi Produk Gigi Lainnya",""]];
+  const ketBawaan = LANG==="en"
+    ? "Recommended by the dentist for "+nama+"."
+    : "Direkomendasikan oleh dokter untuk "+nama+".";
+  labelProduk.forEach(([k,pre])=>{
     pecah(d[k]).forEach(v=>{
       if(v==="-") return;
-      const ket = KETERANGAN_PRODUK[v] || "Direkomendasikan oleh dokter untuk "+nama+".";
-      produkDipilih.push([ pre ? pre+" "+v : v, ket ]);
+      produkDipilih.push([ pre ? pre+" "+v : v, ketBawaan ]);
     });
   });
   const pr=$("#produk");
-  (produkDipilih.length?produkDipilih:PRODUK_DEFAULT).forEach(([nm,ket])=>{
+  (produkDipilih.length?produkDipilih:tx("produk")).forEach(([nm,ket])=>{
     const it=el("div","it");
     it.appendChild(el("span","nm",nm));
     it.appendChild(el("span",null,ket));
@@ -676,21 +872,14 @@ function render(d){
 
   /* ---- halaman 4: apa yang harus segera dilakukan ---- */
   const aksi=[];
-  if(berlubang.length) aksi.push(["Tambal Gigi yang Berlubang",
-    "Gigi berlubang bisa memburuk dengan cepat, menyebabkan nyeri hebat, infeksi, dan merusak gigi lain. Segera lakukan tambal gigi sebelum masalah bertambah parah.",
-    CONFIG.VIDEO.tambal]);
-  if(dicabut.length) aksi.push(["Cabut Gigi Susu yang Belum Tanggal",
-    "Gigi susu yang belum tanggal, tapi sudah tumbuh gigi baru bisa menyebabkan gigi berdesakan. Segera lakukan pencabutan untuk mencegah susunan gigi berantakan.",
-    CONFIG.VIDEO.cabut]);
-  if(sisaAkar.length) aksi.push(["Cabut Sisa Akar",
-    "Sisa akar yang tertinggal bisa menyebabkan infeksi serius, bengkak, dan kerusakan pada gusi serta tulang rahang. Segera lakukan pencabutan untuk mencegah komplikasi lebih lanjut.",
-    CONFIG.VIDEO.akar]);
-  if(ada(karang) && karang.indexOf("Tidak Ada Karang Gigi")!==0) aksi.push(["Bersihkan Karang Gigi",
-    "Penumpukan karang bisa menyebabkan gusi meradang dan infeksi. Jika dibiarkan, gigi bisa goyang atau lepas. Segera lakukan scaling rutin untuk menjaga kesehatan gigi dan gusi.",
-    CONFIG.VIDEO.karang]);
-  if(susunan.indexOf("Tidak Rapi")!==-1 || susunan.indexOf("Maloklusi")!==-1) aksi.push(["Rapikan dan Luruskan Susunan Gigi",
-    "Gigi yang tidak rapi bisa mengganggu fungsi kunyah dan sulit dibersihkan, berisiko menimbulkan masalah lebih lanjut. Segera konsultasikan perawatan Myobrace untuk merapikan gigi anak secara alami sejak dini.",
-    CONFIG.VIDEO.susunan]);
+  const A = tx("aksi");
+  const adaKarang  = ada(karang) && karang.indexOf("Tidak Ada Karang Gigi")!==0 && karang.indexOf("No Tartar")!==0;
+  const susunanBermasalah = /Tidak Rapi|Maloklusi|Needs Attention/i.test(susunan);
+  if(berlubang.length) aksi.push([A.tambal[0], A.tambal[1], CONFIG.VIDEO.tambal]);
+  if(dicabut.length)   aksi.push([A.cabut[0],  A.cabut[1],  CONFIG.VIDEO.cabut]);
+  if(sisaAkar.length)  aksi.push([A.akar[0],   A.akar[1],   CONFIG.VIDEO.akar]);
+  if(adaKarang)        aksi.push([A.karang[0], A.karang[1], CONFIG.VIDEO.karang]);
+  if(susunanBermasalah)aksi.push([A.susunan[0],A.susunan[1],CONFIG.VIDEO.susunan]);
 
   if(aksi.length){
     const box=$("#todo");
@@ -699,7 +888,7 @@ function render(d){
       c.appendChild(el("h3",null,j));
       c.appendChild(el("p",null,t));
       if(v){
-        const a=el("a",null,"Tonton Video Edukasi, Klik Disini");
+        const a=el("a",null,tx("video"));
         a.href=v; a.target="_blank"; a.rel="noopener";
         c.appendChild(a);
       }
@@ -711,7 +900,7 @@ function render(d){
 
   /* ---- tombol ---- */
   const judulLayar = document.title;
-  const namaFile = (periksa||"") + "-Rapor-Gigi-" + nama.replace(/\s+/g,"-");
+  const namaFile = (periksa||"") + (LANG==="en" ? "-Dental-Report-" : "-Rapor-Gigi-") + nama.replace(/\s+/g,"-");
   window.addEventListener("beforeprint",()=>{ document.title = namaFile; });
   window.addEventListener("afterprint", ()=>{ document.title = judulLayar; });
   $("#btnPrint").addEventListener("click",()=>window.print());
@@ -720,7 +909,7 @@ function render(d){
     const b=e.currentTarget, teks=b.textContent;
     try{
       await navigator.clipboard.writeText(location.href);
-      b.textContent="Link tersalin";
+      b.textContent=tx("btnCopyOk");
     }catch(err){
       b.textContent=location.href;
     }
@@ -728,13 +917,33 @@ function render(d){
   });
   if(CONFIG.WA_CRO){
     $("#btnWa").href="https://wa.me/"+CONFIG.WA_CRO+"?text="+
-      encodeURIComponent("Halo Medikids, saya ingin bertanya tentang rapor gigi "+nama+".");
+      encodeURIComponent(LANG==="en"
+        ? "Hello Medikids, I would like to ask about "+nama+"'s dental report."
+        : "Halo Medikids, saya ingin bertanya tentang rapor gigi "+nama+".");
   } else {
     $("#btnWa").classList.add("hide");
   }
 
   $("#stLoad").classList.add("hide");
   $("#isi").classList.remove("hide");
+}
+
+/* mengisi teks statis di halaman sesuai bahasa */
+function pasangTeksStatis(){
+  const set=(id,k,html)=>{
+    const e=$("#"+id); if(!e) return;
+    if(html) e.innerHTML=tx(k); else e.textContent=tx(k);
+  };
+  set("jdlDokter","jdlDokter"); set("pilPesan","pilPesan"); set("pilPasca","pilPasca");
+  set("jdlRekom","jdlRekom");   set("jdlLanjutan","jdlLanjutan");
+  set("jdlNext","jdlNext");     set("jdlNextTeks","jdlNextTeks");
+  set("jdlTips","jdlTips",true);
+  set("tipUtamaJdl","tipUtamaJdl"); set("tipUtamaTeks","tipUtamaTeks");
+  set("jdlTipsLain","jdlTipsLain"); set("jdlProduk","jdlProduk");
+  set("jdlAksi","jdlAksi");
+  set("btnPrint","btnPrint"); set("btnCopy","btnCopy"); set("btnWa","btnWa");
+  const cp=$(".tips-print"); if(cp) cp.innerHTML=tx("caraPrint");
+  const ft=$(".foot");       if(ft) ft.innerHTML=tx("foot");
 }
 
 function namaDokter(n){
@@ -745,7 +954,7 @@ function namaDokter(n){
 function temuanGigi(box,judul,list){
   const f=el("div","tm");
   f.appendChild(el("h3",null,judul));
-  f.appendChild(el("div","gg-list","Gigi : "+(list.length?list.join(", "):"—")));
+  f.appendChild(el("div","gg-list",tx("tGigi")+(list.length?list.join(", "):"—")));
   box.appendChild(f);
 }
 function temuanTeks(box,judul,teks){
