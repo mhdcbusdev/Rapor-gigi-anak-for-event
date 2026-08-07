@@ -89,6 +89,14 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
   .gt{width:32px;height:30px;font-size:12px}
 }
 
+.bahasa{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FFF9F2;
+  border:1.5px solid var(--line-strong);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+.bahasa .t{font-size:13px;font-weight:700;margin-right:4px}
+.bahasa button{border:1.5px solid var(--line-strong);background:#fff;color:var(--navy);font:inherit;
+  font-size:13.5px;font-weight:700;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.bahasa button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.bahasa .ket{font-size:12px;color:var(--navy-soft);font-weight:500;flex-basis:100%}
+
 .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .quick button{border:1px solid var(--line-strong);background:#fff;color:var(--navy);font:inherit;font-size:12px;
   font-weight:600;padding:5px 10px;border-radius:999px;cursor:pointer}
@@ -156,6 +164,14 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
     <b>Belum bisa kirim.</b> <code>API_URL</code> di dalam file ini masih kosong.
     Buka file <code>input.html</code>, cari <code>const CONFIG</code>, lalu tempel URL Web App Apps Script
     (<code>https://script.google.com/macros/s/.../exec</code>).
+  </div>
+
+  <div class="bahasa">
+    <span class="t">Bahasa rapor</span>
+    <button type="button" id="bhsID" aria-pressed="true">Indonesia</button>
+    <button type="button" id="bhsEN" aria-pressed="false">English</button>
+    <span class="ket">Pilihan di form ini tetap Bahasa Indonesia. Tombol di atas hanya menentukan bahasa
+      rapor dan pesan WhatsApp yang diterima orang tua.</span>
   </div>
 
   <form id="form" novalidate>
@@ -346,15 +362,9 @@ if(!window.MHDC_CONFIG){
 }
 
 
-// Penjelasan otomatis mengikuti Kondisi Gigi Secara Umum (kolom Penjelasan_Hidden)
-const PENJELASAN = {
-  "Kondisi Gigi Baik Sekali":"Gigi anak sangat sehat! Tidak ada masalah seperti gigi berlubang, plak, atau karang gigi. Kebersihan mulut terjaga dengan baik, dan gusi sehat.",
-  "Kondisi Gigi Cukup Baik":"Gigi dalam kondisi yang cukup baik, namun ada sedikit plak atau tanda awal gigi berlubang yang perlu diperhatikan agar tidak berkembang lebih lanjut.",
-  "Kondisi Gigi Kurang Baik":"Gigi terdapat beberapa masalah, seperti karang gigi atau gigi berlubang yang perlu ditangani segera untuk mencegah kerusakan lebih lanjut.",
-  "Kondisi Gigi Perlu Perhatian":"Gigi perlu perawatan segera. Ada masalah serius seperti gigi berlubang parah, peradangan gusi, atau sisa akar yang bisa menyebabkan komplikasi jika tidak diatasi."
-};
-
-// Pilihan tiap field — teksnya sama persis dengan data yang berjalan di Sheet
+// Pilihan tiap field — selalu Bahasa Indonesia.
+// Terjemahan ke Inggris dilakukan di halaman rapor, bukan di sini,
+// supaya isi spreadsheet tetap seragam dengan data lama.
 const OPSI = {
   "Kondisi Gigi Secara Umum":[
     "Kondisi Gigi Baik Sekali","Kondisi Gigi Cukup Baik",
@@ -383,6 +393,15 @@ const OPSI = {
   "Rekomendasi Produk Gigi Lainnya":[
     "Dental Floss","Dental Floss Pick","Sikat Interdental"]
 };
+
+// Penjelasan otomatis untuk kolom Penjelasan_Hidden
+const PENJELASAN = {
+  "Kondisi Gigi Baik Sekali":"Gigi anak sangat sehat! Tidak ada masalah seperti gigi berlubang, plak, atau karang gigi. Kebersihan mulut terjaga dengan baik, dan gusi sehat.",
+  "Kondisi Gigi Cukup Baik":"Gigi dalam kondisi yang cukup baik, namun ada sedikit plak atau tanda awal gigi berlubang yang perlu diperhatikan agar tidak berkembang lebih lanjut.",
+  "Kondisi Gigi Kurang Baik":"Gigi terdapat beberapa masalah, seperti karang gigi atau gigi berlubang yang perlu ditangani segera untuk mencegah kerusakan lebih lanjut.",
+  "Kondisi Gigi Perlu Perhatian":"Gigi perlu perawatan segera. Ada masalah serius seperti gigi berlubang parah, peradangan gusi, atau sisa akar yang bisa menyebabkan komplikasi jika tidak diatasi."
+};
+
 
 // Kolom di Sheet yang sudah tidak dipakai, tetap dikirim kosong supaya
 // urutan kolom tidak bergeser (watzap.gs membaca kolom berdasarkan nomor).
@@ -504,30 +523,44 @@ function rapikanNomorHP(v){
   return "62"+s.replace(/^0+/,"");
 }
 
-/* ---------- radio & checkbox ---------- */
-$$(".opts[data-key]").forEach(box=>{
-  const key=box.dataset.key;
-  const type=box.dataset.type==="radio"?"radio":"checkbox";
-  const name="g_"+key.trim().replace(/\W+/g,"_");
-  (OPSI[key]||[]).forEach(teks=>{
-    const lab=document.createElement("label");
-    lab.className="opt";
-    lab.innerHTML='<input type="'+type+'" name="'+name+'"><span></span>';
-    lab.querySelector("span").textContent=teks;
-    lab.querySelector("input").value=teks;
-    box.appendChild(lab);
+/* ---------- pilihan bahasa rapor ---------- */
+let BAHASA = "ID";   // hanya menandai bahasa rapor untuk orang tua
+
+function bangunOpsi(){
+  $$(".opts[data-key]").forEach(box=>{
+    const key=box.dataset.key;
+    const type=box.dataset.type==="radio"?"radio":"checkbox";
+    const name="g_"+key.trim().replace(/\W+/g,"_");
+    box.innerHTML="";
+    (OPSI[key]||[]).forEach(teks=>{
+      const lab=document.createElement("label");
+      lab.className="opt";
+      lab.innerHTML='<input type="'+type+'" name="'+name+'"><span></span>';
+      lab.querySelector("span").textContent=teks;
+      lab.querySelector("input").value=teks;
+      box.appendChild(lab);
+    });
   });
+}
+
+function setBahasa(kode){
+  BAHASA = kode;
+  $("#bhsID").setAttribute("aria-pressed", kode==="ID" ? "true" : "false");
+  $("#bhsEN").setAttribute("aria-pressed", kode==="EN" ? "true" : "false");
+  // pilihan di form tidak berubah — yang berubah hanya bahasa rapor
+}
+$("#bhsID").addEventListener("click",()=>setBahasa("ID"));
+$("#bhsEN").addEventListener("click",()=>setBahasa("EN"));
+
+/* ---------- radio & checkbox ---------- */
+bangunOpsi();
+$$(".opts[data-key]").forEach(box=>{
   box.addEventListener("change",()=>{
     $$(".opt",box).forEach(o=>o.classList.toggle("on",o.querySelector("input").checked));
     tandaiBeres(box);
   });
 });
-// "Lainnya" hanya dipakai untuk memunculkan kolom, tidak ikut ditulis ke Sheet
-const NILAI_PEMICU = ["Lainnya"];
-function nilaiOpts(box){
-  return $$("input:checked",box).map(i=>i.value)
-    .filter(v=>!NILAI_PEMICU.includes(v)).join(", ");
-}
+function nilaiOpts(box){ return $$("input:checked",box).map(i=>i.value).join(", "); }
 
 /* ---------- preview kecil ---------- */
 $("#hp").addEventListener("input",()=>{
@@ -596,6 +629,7 @@ function ambilData(){
   d["No HP"]=rapikanNomorHP(d["No HP"]);
   d["No Hp PIC/ Pengisi"]=rapikanNomorHP(d["No Hp PIC/ Pengisi"]);
   d["Penjelasan_Hidden"]=PENJELASAN[d["Kondisi Gigi Secara Umum"]]||"";
+  d["Bahasa"]=BAHASA;
   d["Rapor ID"]=raporIdSekarang();
   return d;
 }
@@ -660,6 +694,7 @@ $("#resetAll").addEventListener("click",()=>{
 });
 function bersihkan(){
   $("#form").reset();
+  bangunOpsi();
   $$(".opt").forEach(o=>o.classList.remove("on"));
   $$(".bad").forEach(e=>e.classList.remove("bad"));
   $$(".err-msg").forEach(e=>e.classList.remove("show"));
