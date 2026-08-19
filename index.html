@@ -109,9 +109,9 @@ ul.clean li{margin-bottom:4px;font-size:14px}
 .prod .row{display:grid;gap:12px}
 .prod .it{align-items:flex-start}
 @media(min-width:560px){.prod .row{grid-template-columns:1fr 1fr}}
-.prod .it{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#4A6180}
-.prod .nm{background:var(--yellow);color:var(--navy);font-weight:700;font-size:12px;padding:3px 9px;
-  border-radius:6px;flex:none}
+.prod .it{display:block;font-size:13.5px;color:#4A6180;line-height:1.5}
+.prod .nm{display:inline-block;background:var(--yellow);color:var(--navy);font-weight:700;font-size:12px;
+  padding:3px 9px;border-radius:6px;max-width:100%;word-break:break-word}
 
 /* ---------- aksi segera ---------- */
 .act{border:2px solid var(--navy-btn);border-radius:14px;padding:14px 16px;margin-bottom:14px}
@@ -871,20 +871,17 @@ function render(d){
        ["Rekomendasi Vitamin Gigi",""],["Rekomendasi Produk Gigi Lainnya",""]]
     : [["Rekomendasi Sikat Gigi","Sikat gigi"],["Rekomendasi Pasta Gigi","Pasta gigi"],
        ["Rekomendasi Vitamin Gigi",""],["Rekomendasi Produk Gigi Lainnya",""]];
-  const ketBawaan = LANG==="en"
-    ? "Recommended by the dentist for "+nama+"."
-    : "Direkomendasikan oleh dokter untuk "+nama+".";
   labelProduk.forEach(([k,pre])=>{
     pecah(d[k]).forEach(v=>{
       if(v==="-") return;
-      produkDipilih.push([ pre ? pre+" "+v : v, ketBawaan ]);
+      produkDipilih.push([ pre ? pre+" "+v : v, "" ]);
     });
   });
   const pr=$("#produk");
   (produkDipilih.length?produkDipilih:tx("produk")).forEach(([nm,ket])=>{
     const it=el("div","it");
     it.appendChild(el("span","nm",nm));
-    it.appendChild(el("span",null,ket));
+    if(ket) it.appendChild(el("span",null,ket));
     pr.appendChild(it);
   });
 
