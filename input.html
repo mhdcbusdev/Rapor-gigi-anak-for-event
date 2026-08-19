@@ -89,6 +89,24 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
   .gt{width:32px;height:30px;font-size:12px}
 }
 
+.draf{background:#FFFBF5;border:1.5px solid var(--line-strong);border-radius:12px;
+  padding:14px;margin-bottom:16px}
+.draf-atas{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:2px}
+.draf-atas .t{font-size:13px;font-weight:700;flex:1}
+.draf-btn{border:1.5px solid var(--line-strong);background:#fff;color:var(--navy);font:inherit;
+  font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer}
+.draf-btn:hover{border-color:var(--red);color:var(--red)}
+.draf-btn.utama{background:var(--red);border-color:var(--red);color:#fff}
+.draf-btn.utama:hover{background:var(--red-dark)}
+.draf-ket{font-size:12px;color:var(--navy-soft);font-weight:500}
+.draf-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.draf-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1.5px solid var(--line-strong);
+  border-radius:10px;padding:9px 12px;background:#fff}
+.draf-item .nm{font-weight:700;font-size:14px;flex:1;min-width:140px}
+.draf-item .mt{font-size:12px;color:var(--navy-soft);font-weight:500;flex-basis:100%}
+.draf-kosong{font-size:13px;color:var(--navy-soft);text-align:center;padding:14px}
+.draf-status{font-size:12.5px;color:var(--navy-soft);font-weight:600;margin-top:8px;min-height:16px}
+
 .bahasa{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FFF9F2;
   border:1.5px solid var(--line-strong);border-radius:12px;padding:12px 14px;margin-bottom:16px}
 .bahasa .t{font-size:13px;font-weight:700;margin-right:4px}
@@ -112,7 +130,11 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,246,239,.94);
   backdrop-filter:blur(8px);border-top:1px solid var(--line-strong);padding:12px 16px}
-.bar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:620px){
+  .bar .status{flex-basis:100%;order:-1;margin-bottom:2px}
+  .bar .btn{flex:1}
+}
 .bar .status{font-size:12.5px;color:var(--navy-soft);font-weight:500;flex:1}
 .btn{font:inherit;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;border:none;border-radius:11px;
   padding:13px 26px;cursor:pointer;transition:.15s}
@@ -166,6 +188,17 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
     (<code>https://script.google.com/macros/s/.../exec</code>).
   </div>
 
+  <div class="draf">
+    <div class="draf-atas">
+      <span class="t">Melanjutkan pasien yang tadi disimpan?</span>
+      <button type="button" class="draf-btn utama" id="drafMuat">Lihat draft</button>
+    </div>
+    <div class="draf-ket">Klik "Pakai data ini" pada draft yang mau dilanjutkan.
+      Tombol <b>Simpan draft</b> ada di bawah, sebelah tombol Kirim.</div>
+    <div class="draf-status" id="drafStatus"></div>
+    <div class="draf-list hide" id="drafList"></div>
+  </div>
+
   <div class="bahasa">
     <span class="t">Bahasa rapor</span>
     <button type="button" id="bhsID" aria-pressed="true">Indonesia</button>
@@ -197,10 +230,10 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
           <input type="email" id="email" data-key="Email" placeholder="nama@email.com">
         </div>
         <div class="f">
-          <label class="req" for="lahir">Tanggal lahir pasien</label>
-          <input type="date" id="lahir" data-key="Tanggal Lahir Pasien" data-req>
+          <label for="lahir">Tanggal lahir pasien <span class="hint">(boleh dikosongkan atau ditulis "-")</span></label>
+          <input type="text" id="lahir" data-key="Tanggal Lahir Pasien"
+                 placeholder="contoh: 21 Juli 2020, 2020, atau -" autocomplete="off">
           <div class="hint" id="usiaPrev">Usia: —</div>
-          <div class="err-msg">Wajib diisi.</div>
         </div>
         <div class="f">
           <label class="req" for="periksa">Tanggal pemeriksaan</label>
@@ -322,6 +355,7 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
 <div class="bar">
   <div class="bar-inner">
     <div class="status" id="status">Periksa lagi sebelum kirim — WhatsApp langsung terkirim ke orang tua.</div>
+    <button class="btn ghost" id="drafSimpan">Simpan draft</button>
     <button class="btn primary" id="submitBtn">Kirim rapor gigi</button>
   </div>
 </div>
@@ -482,6 +516,13 @@ $$("[data-gigi]").forEach(wrap=>{
   input.addEventListener("input",sinkron);
 });
 
+function el(tag,cls,teks){
+  const n=document.createElement(tag);
+  if(cls) n.className=cls;
+  if(teks!==undefined) n.textContent=teks;
+  return n;
+}
+
 /* ---------- Rapor ID (memakai nama pasien) ----------
    Bentuknya: 2026-06-03-Rapor-Gigi-Tanahrum-Abdalla-Sasongko-K7M2XQ9F
    8 huruf di belakang wajib ada supaya pasien dengan nama sama
@@ -568,7 +609,15 @@ $("#hp").addEventListener("input",()=>{
   $("#hpPrev").textContent="Akan dikirim ke: "+(n||"—");
 });
 function hitungUsia(){
-  const v=$("#lahir").value;
+  const teks=$("#lahir").value.trim();
+  // usia hanya bisa dihitung kalau tanggalnya ditulis lengkap
+  let v="";
+  let m=teks.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m) v=teks;
+  else {
+    m=teks.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+    if(m) v=m[3]+"-"+("0"+m[2]).slice(-2)+"-"+("0"+m[1]).slice(-2);
+  }
   if(!v){ $("#usiaPrev").textContent="Usia: —"; return; }
   const l=new Date(v+"T00:00:00"), k=new Date(($("#periksa").value||hariIniJakarta())+"T00:00:00");
   let th=k.getFullYear()-l.getFullYear(), bl=k.getMonth()-l.getMonth();
@@ -581,7 +630,7 @@ $("#picHp").addEventListener("input",()=>{
   const n=rapikanNomorHP($("#picHp").value);
   $("#picPrev").textContent="Notifikasi dikirim ke: "+(n||"—");
 });
-$("#lahir").addEventListener("change",hitungUsia);
+$("#lahir").addEventListener("input",hitungUsia);
 $("#periksa").addEventListener("change",hitungUsia);
 $("#nama").addEventListener("input",updateLinkPrev);
 $("#periksa").addEventListener("change",updateLinkPrev);
@@ -634,6 +683,122 @@ function ambilData(){
   return d;
 }
 
+/* ======================================================================
+   DRAFT — simpan dulu, lanjutkan nanti
+   Disimpan di tab "Draft Rapor Gigi Event" pada spreadsheet, bukan di
+   browser, jadi tidak hilang kalau halaman ditutup atau ganti perangkat.
+   ====================================================================== */
+let DRAFT_ID = "";
+
+function panggilDraft(params){
+  const url=CONFIG.API_URL+"?"+new URLSearchParams(params).toString();
+  return fetch(url).then(r=>r.text()).then(t=>{
+    try{ return JSON.parse(t); }catch(e){ return {ok:false,error:"Balasan server tidak dikenali."}; }
+  }).catch(()=>({ok:false,error:"Tidak bisa menghubungi Apps Script."}));
+}
+
+$("#drafSimpan").addEventListener("click",async()=>{
+  if(!CONFIG.API_URL){ $("#status").textContent="API_URL belum diisi di config.js."; return; }
+  const nama=$("#nama").value.trim();
+  if(!nama){ $("#status").textContent="Isi nama pasien dulu supaya draftnya bisa dikenali."; return; }
+
+  const b=$("#drafSimpan");
+  b.disabled=true; b.textContent="Menyimpan…";
+  $("#status").textContent="Menyimpan draft…";
+
+  if(!DRAFT_ID) DRAFT_ID = "DRF-"+hariIniJakarta().replace(/-/g,"")+"-"+kodeAcak(6);
+
+  const d=ambilData();
+  d["aksi"]="draftSimpan";
+  d["Draft ID"]=DRAFT_ID;
+  try{
+    const body=new URLSearchParams();
+    Object.entries(d).forEach(([k,v])=>body.append(k,v==null?"":v));
+    await fetch(CONFIG.API_URL,{method:"POST",mode:"no-cors",body});
+    $("#status").textContent="Draft \u201c"+nama+"\u201d tersimpan. Bisa dilanjutkan kapan saja.";
+  }catch(e){
+    $("#status").textContent="Gagal menyimpan draft. Cek koneksi internet.";
+  }finally{
+    b.disabled=false; b.textContent="Simpan draft";
+  }
+});
+
+$("#drafMuat").addEventListener("click",async()=>{
+  const kotak=$("#drafList");
+  if(!kotak.classList.contains("hide")){
+    kotak.classList.add("hide");
+    $("#drafMuat").textContent="Lihat draft";
+    return;
+  }
+  if(!CONFIG.API_URL){ $("#drafStatus").textContent="API_URL belum diisi di config.js."; return; }
+  $("#drafMuat").disabled=true; $("#drafStatus").textContent="Mengambil daftar draft…";
+  const h=await panggilDraft({aksi:"draftDaftar"});
+  $("#drafMuat").disabled=false;
+  if(!h.ok){ $("#drafStatus").textContent=h.error||"Gagal mengambil draft."; return; }
+
+  kotak.innerHTML="";
+  if(!h.hasil.length){
+    kotak.appendChild(el("div","draf-kosong","Belum ada draft tersimpan."));
+  } else {
+    h.hasil.forEach(r=>{
+      const it=el("div","draf-item");
+      it.appendChild(el("div","nm", r.nama || "(tanpa nama)"));
+      const pakai=el("button","draf-btn utama","Pakai data ini");
+      pakai.type="button";
+      pakai.addEventListener("click",()=>pakaiDraft(r.id));
+      const hapus=el("button","draf-btn","Hapus");
+      hapus.type="button";
+      hapus.addEventListener("click",()=>hapusDraftIni(r.id, r.nama, it));
+      it.appendChild(pakai); it.appendChild(hapus);
+      it.appendChild(el("div","mt", (r.event? r.event+" \u00b7 ":"")+"disimpan "+r.waktu));
+      kotak.appendChild(it);
+    });
+  }
+  kotak.classList.remove("hide");
+  $("#drafMuat").textContent="Tutup daftar";
+  $("#drafStatus").textContent = h.hasil.length ? h.hasil.length+" draft tersimpan." : "";
+});
+
+async function pakaiDraft(id){
+  $("#drafStatus").textContent="Memuat draft…";
+  const h=await panggilDraft({aksi:"draftAmbil", id:id});
+  if(!h.ok){ $("#drafStatus").textContent=h.error||"Gagal memuat draft."; return; }
+
+  bersihkan();
+  const d=h.data;
+  DRAFT_ID=id;
+
+  $$("input[data-key],select[data-key],textarea[data-key]").forEach(e=>{
+    const v=d[e.dataset.key];
+    if(v!==undefined && v!==null) e.value=v;
+    e.dispatchEvent(new Event("input"));
+  });
+  $$(".opts[data-key]").forEach(box=>{
+    const isi=String(d[box.dataset.key]||"");
+    $$("input",box).forEach(i=>{ i.checked = isi.indexOf(i.value)!==-1; });
+    box.dispatchEvent(new Event("change"));
+  });
+  if(d["Bahasa"]==="EN") setBahasa("EN"); else setBahasa("ID");
+  hitungUsia(); updateLinkPrev();
+
+  $("#drafList").classList.add("hide");
+  $("#drafMuat").textContent="Lihat draft";
+  $("#drafStatus").textContent="Draft \u201c"+(d["Nama Pasien"]||"")+"\u201d dimuat. Lengkapi lalu kirim.";
+  if(window.scrollTo) window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function hapusDraftIni(id, nama, baris){
+  if(!confirm("Hapus draft "+(nama||"ini")+"?")) return;
+  const h=await panggilDraft({aksi:"draftHapus", id:id});
+  if(h.ok){
+    baris.remove();
+    if(DRAFT_ID===id) DRAFT_ID="";
+    $("#drafStatus").textContent="Draft dihapus.";
+  } else {
+    $("#drafStatus").textContent=h.error||"Gagal menghapus draft.";
+  }
+}
+
 /* ---------- kirim ---------- */
 const btn=$("#submitBtn");
 btn.addEventListener("click",async()=>{
@@ -652,6 +817,7 @@ btn.addEventListener("click",async()=>{
     const body=new URLSearchParams();
     Object.entries(data).forEach(([k,v])=>body.append(k,v==null?"":v));
     await fetch(CONFIG.API_URL,{method:"POST",mode:"no-cors",body});
+    if(DRAFT_ID){ panggilDraft({aksi:"draftHapus", id:DRAFT_ID}); DRAFT_ID=""; }
     tampilkanSukses(data);
   }catch(e){
     $("#status").textContent="Gagal mengirim. Cek koneksi internet, lalu tekan Kirim lagi.";
@@ -693,6 +859,7 @@ $("#resetAll").addEventListener("click",()=>{
   $("#nama").focus();
 });
 function bersihkan(){
+  DRAFT_ID="";
   $("#form").reset();
   bangunOpsi();
   $$(".opt").forEach(o=>o.classList.remove("on"));
