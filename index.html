@@ -34,12 +34,15 @@ h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;font-weight:800;letter-spacin
 
 /* ---------- judul bergaya PDF ---------- */
 .ttl{text-align:center;margin-bottom:18px}
+@media(max-width:560px){
+  .brand img{height:26px}
+}
 .ttl .big{font-size:30px;color:var(--red);line-height:1.05;text-transform:uppercase}
 .ttl .big.sm{font-size:25px}
 .ttl .sub{font-size:13px;color:var(--navy-soft);font-weight:600;margin-top:2px}
-.brand{position:absolute;top:20px;right:26px;font-family:'Baloo 2',sans-serif;font-weight:800;
-  font-size:15px;color:var(--red);line-height:1}
-.brand img{display:block;height:30px;width:auto}
+.kop{display:flex;align-items:center;justify-content:flex-end;margin-bottom:14px}
+.brand{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:15px;color:var(--red);line-height:1}
+.brand img{display:block;height:34px;width:auto}
 .goodjob{display:inline-block;background:var(--yellow);color:var(--navy);font-family:'Baloo 2',sans-serif;
   font-weight:800;font-size:12px;padding:4px 13px;border-radius:999px;margin-bottom:6px;letter-spacing:.04em}
 
@@ -139,7 +142,7 @@ ul.clean li{margin-bottom:4px;font-size:14px}
 @page{size:A4;margin:12mm 10mm}
 @media print{
   body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .brand img{height:26px}
+  .brand img{height:30px}
   .tools,.foot,.tips-print{display:none !important}
   .page{box-shadow:none;border-radius:0;margin:0;padding:0 0 8mm;max-width:none;
         break-after:page;page-break-after:always}
@@ -712,10 +715,17 @@ function render(d){
   if(jelas) kb.appendChild(el("div","t",jelas));
 
   /* ---- logo Medikids ---- */
-  document.querySelectorAll(".brand").forEach(b=>{
+  document.querySelectorAll(".page").forEach(pg=>{
+    const b=pg.querySelector(".brand");
+    if(!b) return;
     const img=document.createElement("img");
     img.src=LOGO_MEDIKIDS; img.alt="Medikids";
     b.textContent=""; b.appendChild(img);
+    // logo ditaruh di baris tersendiri di atas judul, jadi tidak bisa menumpuk
+    const kop=document.createElement("div");
+    kop.className="kop";
+    kop.appendChild(b);
+    pg.insertBefore(kop, pg.firstChild);
   });
 
   /* ---- gambar judul di paling atas ---- */
