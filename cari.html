@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Cari Rapor Gigi — Medikids</title>
+<title>Cari Rapor Gigi Event — Medikids</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,10 +35,6 @@ h1,h2{font-family:'Baloo 2',sans-serif;font-weight:800;letter-spacing:-.01em;mar
 .wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
   box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
-.notice{background:#FFF3D6;border:1px solid var(--yellow);border-left:5px solid var(--yellow);
-  border-radius:10px;padding:13px 15px;font-size:13.5px;margin-bottom:18px}
-.notice.err{background:#FFE9E7;border-color:var(--red);border-left-color:var(--red)}
-.notice code{background:rgba(29,58,99,.08);padding:1px 5px;border-radius:4px;font-size:12.5px}
 
 label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
 .hint{font-size:12px;color:var(--navy-soft);font-weight:500}
@@ -56,8 +52,26 @@ input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(228,4
 .btn.ghost:hover{border-color:var(--navy-soft)}
 .btn.hijau{background:var(--mint);color:#fff}
 .btn.hijau:hover{background:#0E9E90}
+.btn.mati{background:#D9C7BE !important;color:#fff;cursor:not-allowed}
+.btn.mati:hover{background:#D9C7BE}
 
 .status{font-size:13px;color:var(--navy-soft);margin-top:10px;font-weight:500;min-height:18px}
+
+.f label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+select{width:100%;padding:12px 13px;font:inherit;font-size:15px;color:var(--navy);
+  background:#FFFDFB;border:1.5px solid var(--line-strong);border-radius:10px;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235C7395' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
+select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(228,49,39,.14)}
+
+.hitung{font-size:13px;font-weight:700;color:var(--navy);background:var(--mint-soft);
+  border:1px solid #BFEDE7;border-radius:9px;padding:8px 12px;margin-bottom:12px;display:none}
+.hitung.tampil{display:block}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:var(--red-dark);background:var(--red-soft);
+  border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+.tag.en{color:#0E7A70;background:var(--mint-soft)}
+.item.selesai{opacity:.62}
+.item.selesai .nm{color:var(--navy-soft)}
 
 .hasil{display:flex;flex-direction:column;gap:10px}
 .item{border:1.5px solid var(--line-strong);border-radius:12px;padding:14px;background:#FFFDFB}
@@ -87,78 +101,99 @@ input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(228,4
 
 <div class="wrap">
 
-  <div class="notice err hide" id="cfgWarn">
-    <b>Belum bisa dipakai.</b> <code>API_URL</code> di dalam file <code>cari.html</code> masih kosong.
-  </div>
+  <div class="notice err hide" id="cfgWarn"></div>
 
   <div class="card" id="kartuCari">
-    <label for="q">Nama pasien</label>
-    <div class="cari-row">
-      <input type="search" id="q" placeholder="Ketik sebagian nama, contoh: aisyah" autocomplete="off">
-      <button class="btn primary" id="btnCari">Cari</button>
+    <div class="f">
+      <label for="fEvent">Event</label>
+      <select id="fEvent"><option value="">Memuat event…</option></select>
     </div>
-    <div class="hint" style="margin-top:8px">Minimal 3 huruf. Hasil terbaru muncul paling atas.</div>
+    <div class="f" style="margin-top:12px">
+      <label for="q">Nama pasien <span class="hint" style="font-weight:500">(opsional)</span></label>
+      <div class="cari-row">
+        <input type="search" id="q" placeholder="Kosongkan untuk tampilkan semua di event itu" autocomplete="off">
+        <button class="btn primary" id="btnCari">Cari</button>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:8px">Pilih <b>event</b>, atau ketik nama (min. 3 huruf). Hasil terbaru di atas.</div>
     <div class="status" id="status"></div>
   </div>
 
   <div class="card hide" id="kartuHasil">
+    <div class="hitung" id="hitung"></div>
     <div class="hasil" id="hasil"></div>
   </div>
 
 </div>
 
-<script src="config.js"></script>
+<script src="config.js?v=1"></script>
 <script>
 /* ======================================================================
    ===========================  KONFIGURASI  ============================
    ====================================================================== */
 const CONFIG = {
-
-  // URL Web App Apps Script — sama dengan yang dipakai di input.html
-  API_URL: "https://script.google.com/macros/s/AKfycby4rE_L1gxRnptV9v8YxIXxE_OVlf_Rc8oMF8MQTy3eXZ_DaAsPeFjpV0n4dQ6UR8cEmQ/exec",
-
-  // Alamat halaman rapor, dipakai untuk tombol "Buka rapor"
-  RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id="
+  API_URL: "https://script.google.com/macros/s/AKfycbwX0hcK47RgBU2KU7_VPgDPUnvVZS8GL2461G8Z7pRCG9q1qgDqEwcLTw8KUyCK6htQXw/exec",
+  RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id=",
+  PROMO_URL: "https://mhdc.co.id/wp-content/uploads/Promo-Diskon-Rapor-Gigi-Anak.pdf",
+  PROMO_URL_EN: "",
+  PESAN_WA: "Hai Parents, orang tua dari {nama},\nterima kasih sudah berkunjung ke booth Medikids di {event} pada {tgl}!\n\nIni Rapor Gigi {nama}. Silahkan buka link berikut :\n\n{link}\n\nKlaim *PROMO SPESIAL RAPOR GIGI*, klik link ini :\n{promo}\n\nSalam sehat dan senyum ceria,\nTim Medikids",
+  PESAN_WA_EN: "Hi Parents of {nama},\nthank you for visiting the Medikids booth at {event} on {tgl}!\n\nHere is {nama}'s Dental Report. Open it through the link below :\n\n{link}\n\nClaim your *SPECIAL DENTAL REPORT PROMO*, tap the link below :\n{promo}\n\nWishing you health and happy smiles,\nMedikids Team"
 };
-
-/* Nilai di atas hanya cadangan. Yang dipakai adalah isi config.js. */
 if(window.MHDC_CONFIG) Object.assign(CONFIG, window.MHDC_CONFIG);
 
-/* config.js wajib termuat. Kalau tidak, semua pengaturan ikut kosong. */
 if(!window.MHDC_CONFIG){
   document.addEventListener("DOMContentLoaded",function(){
     var d=document.createElement("div");
     d.style.cssText="background:#FFE9E7;border:2px solid #E43127;color:#B7241C;padding:14px 16px;"+
       "margin:16px;border-radius:10px;font-family:sans-serif;font-size:14px;font-weight:600";
-    d.textContent="File config.js tidak ditemukan. Pastikan config.js sudah diupload ke repo, "+
-      "satu folder dengan halaman ini.";
+    d.textContent="File config.js tidak ditemukan. Pastikan config.js sudah diupload ke repo, satu folder dengan halaman ini.";
     document.body.insertBefore(d, document.body.firstChild);
   });
 }
 
-
 /* ======================================================================
    ==================  DI BAWAH SINI TIDAK PERLU DIEDIT  ================
    ====================================================================== */
-
 const $  = (s,r=document)=>r.querySelector(s);
-const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
 const BULAN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-
-if(!CONFIG.API_URL) $("#cfgWarn").classList.remove("hide");
-
-function tglIndo(v){
-  const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(!m) return String(v||"-");
-  return parseInt(m[3],10)+" "+BULAN[parseInt(m[2],10)-1]+" "+m[1];
-}
-$("#q").focus();
+const BULAN_EN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function el(tag,cls,teks){
   const n=document.createElement(tag);
   if(cls) n.className=cls;
   if(teks!==undefined) n.textContent=teks;
   return n;
+}
+
+function tglTampil(v,bahasa){
+  const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return String(v||"-");
+  const d=parseInt(m[3],10), mo=parseInt(m[2],10)-1, y=m[1];
+  return bahasa==="EN" ? (BULAN_EN[mo]+" "+d+", "+y) : (d+" "+BULAN[mo]+" "+y);
+}
+
+/* ---------- nomor WA -> format internasional 62... ---------- */
+function waNomor(hp){
+  let s=String(hp||"").replace(/\D/g,"");
+  if(!s) return "";
+  if(s.startsWith("62")){ if(s.charAt(2)==="0") s="62"+s.slice(3); }
+  else if(s.startsWith("0")){ s="62"+s.slice(1); }
+  else if(s.startsWith("8")){ s="62"+s; }
+  return s;
+}
+
+/* ---------- isi template pesan (ID/EN otomatis dari kolom Bahasa) ---------- */
+function buatPesan(r){
+  const bahasa = String(r.bahasa||"").trim().toUpperCase()==="EN" ? "EN":"ID";
+  const tpl = bahasa==="EN" ? (CONFIG.PESAN_WA_EN||CONFIG.PESAN_WA) : CONFIG.PESAN_WA;
+  const promo = (bahasa==="EN" && CONFIG.PROMO_URL_EN) ? CONFIG.PROMO_URL_EN : (CONFIG.PROMO_URL||"");
+  return (tpl || "{nama}: {link}")
+    .replace(/\{nama\}/g,  r.nama   || "")
+    .replace(/\{event\}/g, r.cabang || "")
+    .replace(/\{tgl\}/g,   tglTampil(r.tgl,bahasa))
+    .replace(/\{dokter\}/g,r.dokter || "")
+    .replace(/\{promo\}/g, promo)
+    .replace(/\{link\}/g,  CONFIG.RAPOR_BASE + r.id);
 }
 
 /* ---------- panggil Apps Script (fetch, lalu JSONP kalau diblokir) ---------- */
@@ -179,51 +214,53 @@ async function panggil(params){
   try{
     const r=await fetch(url);
     const teks=await r.text();
-    try{
-      return JSON.parse(teks);
-    }catch(e){
-      // Apps Script menjawab, tapi bukan JSON -> tebak penyebabnya
-      return { ok:false, error: bacaMasalah(teks, r.status) };
-    }
+    try{ return JSON.parse(teks); }
+    catch(e){ return { ok:false, error:"Balasan server tidak dikenali. Cek Apps Script > Executions." }; }
   }catch(e){
-    // fetch diblokir browser -> coba cara kedua (JSONP)
-    try{
-      return await jsonp(url);
-    }catch(e2){
-      return { ok:false, error:"Tidak bisa menghubungi Apps Script. Cek koneksi internet, lalu coba lagi." };
-    }
+    try{ return await jsonp(url); }
+    catch(e2){ return { ok:false, error:"Tidak bisa menghubungi Apps Script. Cek koneksi internet, lalu coba lagi." }; }
   }
 }
 
-/* Menerjemahkan balasan aneh dari Apps Script jadi pesan yang bisa ditindaklanjuti */
-function bacaMasalah(teks, status){
-  const t=String(teks||"");
-  if(/Yepp this is the webhook/i.test(t))
-    return "Apps Script masih memakai versi lama. Buka Apps Script > Deploy > Manage deployments > ikon pensil > New version > Deploy.";
-  if(/Script function not found|is not defined|not a function|ReferenceError/i.test(t))
-    return "File Cari-Rapor.gs belum ada di Apps Script, atau belum di-Save.";
-  if(/accounts\.google\.com|Sign in|Masuk dengan|Choose an account/i.test(t))
-    return "Akses deployment masih terbatas. Di Manage deployments, ubah \u2018Who has access\u2019 menjadi Anyone.";
-  if(/Kolom .*Rapor ID/i.test(t))
-    return "Kolom Rapor ID belum ada. Jalankan menu Rapor Gigi > 1. Isi Rapor ID data lama.";
-  if(/Exception|Error/i.test(t))
-    return "Apps Script error. Buka Apps Script > Executions untuk melihat pesan lengkapnya.";
-  return "Balasan server tidak dikenali (status "+status+"). Cek Apps Script > Executions.";
+/* ---------- isi dropdown event OTOMATIS dari spreadsheet ---------- */
+async function muatEvent(){
+  const sel=$("#fEvent");
+  try{
+    const r=await panggil({aksi:"events"});
+    if(r && r.ok && r.hasil){
+      sel.innerHTML="";
+      sel.appendChild(new Option("— Semua event —",""));
+      r.hasil.forEach(nm=> sel.appendChild(new Option(nm,nm)));
+      return;
+    }
+  }catch(e){}
+  sel.innerHTML="";
+  sel.appendChild(new Option("— Semua event —",""));
+  $("#status").textContent="Gagal memuat daftar event. Kamu tetap bisa cari dengan mengetik nama.";
 }
+muatEvent();
+$("#fEvent").focus();
 
 /* ---------- pencarian ---------- */
 const btn=$("#btnCari");
 async function cari(){
   const q=$("#q").value.trim();
-  if(q.length<3){
-    $("#status").textContent="Ketik minimal 3 huruf nama pasien.";
+  const event=$("#fEvent").value;
+
+  if(!event && q.length<3){
+    $("#status").textContent="Pilih event dulu, atau ketik minimal 3 huruf nama.";
     return;
   }
+  if(q && q.length<3){
+    $("#status").textContent="Nama minimal 3 huruf (atau kosongkan saja).";
+    return;
+  }
+
   btn.disabled=true; btn.textContent="Mencari…";
-  $("#status").textContent="Mencari data pasien…";
+  $("#status").textContent="Mencari data…";
   $("#kartuHasil").classList.add("hide");
   try{
-    const hasil=await panggil({aksi:"cari", q:q});
+    const hasil=await panggil({aksi:"cari", q:q, event:event});
     if(!hasil || !hasil.ok){
       $("#status").textContent=(hasil && hasil.error) ? hasil.error : "Pencarian gagal. Coba lagi.";
       return;
@@ -237,27 +274,43 @@ async function cari(){
 }
 btn.addEventListener("click",cari);
 $("#q").addEventListener("keydown",e=>{ if(e.key==="Enter") cari(); });
+$("#fEvent").addEventListener("change",cari);
+
+/* penghitung "sudah dikirim" */
+let totalItem=0, sudahKirim=0;
+function updateHitung(){
+  const h=$("#hitung");
+  if(!totalItem){ h.classList.remove("tampil"); return; }
+  h.classList.add("tampil");
+  h.textContent="Terkirim "+sudahKirim+" dari "+totalItem+" rapor";
+}
 
 function tampilkan(hasil){
   const box=$("#hasil");
   box.innerHTML="";
   $("#kartuHasil").classList.remove("hide");
+  totalItem=0; sudahKirim=0; updateHitung();
 
-  if(!hasil.hasil.length){
-    box.appendChild(el("div","kosong","Tidak ada pasien dengan nama itu. Coba potong namanya lebih pendek."));
+  const daftar = hasil.hasil || [];
+  if(!daftar.length){
+    box.appendChild(el("div","kosong","Tidak ada rapor yang cocok. Coba longgarkan filternya."));
     $("#status").textContent="";
     return;
   }
-  $("#status").textContent = hasil.hasil.length + " rapor ditemukan" +
-    (hasil.lebih ? " (ditampilkan 15 terbaru — ketik nama lebih lengkap kalau belum ketemu)" : "");
+  totalItem=daftar.length;
+  updateHitung();
+  $("#status").textContent = daftar.length + " rapor ditemukan" +
+    (hasil.lebih ? " (ditampilkan sebagian — perkecil dengan pilih event atau ketik nama)" : "");
 
-  hasil.hasil.forEach(r=>{
+  daftar.forEach(r=>{
     const it=el("div","item");
-    it.appendChild(el("div","nm", r.nama));
+    const nm=el("div","nm", r.nama);
+    if(r.bahasa==="EN") nm.appendChild(el("span","tag en","EN"));
+    it.appendChild(nm);
 
     const m1=el("div","meta");
-    m1.append(document.createTextNode("Periksa "), el("b",null,tglIndo(r.tgl)));
-    if(r.cabang) m1.append(document.createTextNode(" · "), el("b",null,r.cabang));
+    m1.append(document.createTextNode("Periksa "), el("b",null,tglTampil(r.tgl, r.bahasa==="EN"?"EN":"ID")));
+    if(r.cabang) m1.append(document.createTextNode(" · Event "), el("b",null,r.cabang));
     it.appendChild(m1);
 
     const m2=el("div","meta");
@@ -272,53 +325,55 @@ function tampilkan(hasil){
 
     const buka=el("a","btn ghost kecil","Buka rapor");
     buka.href=CONFIG.RAPOR_BASE+encodeURIComponent(r.id);
-    buka.target="_blank"; buka.rel="noopener";
-    buka.style.textDecoration="none";
+    buka.target="_blank"; buka.rel="noopener"; buka.style.textDecoration="none";
     aksi.appendChild(buka);
 
     const salin=el("button","btn ghost kecil","Salin link");
     salin.type="button";
     salin.addEventListener("click",async()=>{
-      const link=CONFIG.RAPOR_BASE+r.id;
-      try{ await navigator.clipboard.writeText(link); salin.textContent="Tersalin"; }
+      try{ await navigator.clipboard.writeText(CONFIG.RAPOR_BASE+r.id); salin.textContent="Tersalin"; }
       catch(e){ salin.textContent="Gagal menyalin"; }
       setTimeout(()=>salin.textContent="Salin link",2000);
     });
     aksi.appendChild(salin);
 
-    const kirim=el("button","btn hijau kecil","Kirim ke orang tua");
-    kirim.type="button";
+    const pesan = buatPesan(r);
+    const nomor = waNomor(r.hp);
     const kabar=el("div","kabar");
-    kirim.addEventListener("click",async()=>{
-      if(!confirm("Kirim link rapor "+r.nama+" ke nomor "+r.hp+" lewat WhatsApp?")) return;
-      kirim.disabled=true; kirim.textContent="Mengirim…";
-      kabar.classList.remove("tampil","gagal");
-      try{
-        const h=await panggil({aksi:"kirim", id:r.id});
-        if(h && h.ok){
-          it.classList.add("terkirim");
-          kabar.textContent="Terkirim ke "+h.ke;
-          kabar.classList.add("tampil");
-          kirim.textContent="Sudah dikirim";
-        } else {
-          kabar.textContent=(h && h.error) ? h.error : "Pengiriman gagal.";
-          kabar.classList.add("tampil","gagal");
-          kirim.disabled=false; kirim.textContent="Kirim ke orang tua";
-        }
-      }catch(e){
-        kabar.textContent="Gagal menghubungi server. Coba lagi.";
-        kabar.classList.add("tampil","gagal");
-        kirim.disabled=false; kirim.textContent="Kirim ke orang tua";
-      }
-    });
+
+    const kirim=el("a","btn hijau kecil","Kirim via WhatsApp");
+    kirim.style.textDecoration="none"; kirim.target="_blank"; kirim.rel="noopener";
+    if(nomor){
+      kirim.href="https://wa.me/"+nomor+"?text="+encodeURIComponent(pesan);
+      kirim.addEventListener("click",()=>{
+        if(!it.classList.contains("selesai")){ it.classList.add("selesai"); sudahKirim++; updateHitung(); }
+        it.classList.add("terkirim");
+        kabar.textContent="WhatsApp dibuka — tinggal tekan Kirim di WA ke "+nomor;
+        kabar.classList.remove("gagal"); kabar.classList.add("tampil");
+        kirim.textContent="Kirim lagi";
+      });
+    } else {
+      kirim.classList.add("mati"); kirim.href="#";
+      kirim.addEventListener("click",(e)=>{ e.preventDefault();
+        kabar.textContent="Nomor HP kosong. Pakai \u201CSalin pesan\u201D, lalu tempel manual di WhatsApp.";
+        kabar.classList.add("tampil","gagal"); });
+    }
     aksi.appendChild(kirim);
+
+    const salinPesan=el("button","btn ghost kecil","Salin pesan");
+    salinPesan.type="button";
+    salinPesan.addEventListener("click",async()=>{
+      try{ await navigator.clipboard.writeText(pesan); salinPesan.textContent="Pesan tersalin"; }
+      catch(e){ salinPesan.textContent="Gagal menyalin"; }
+      setTimeout(()=>salinPesan.textContent="Salin pesan",2000);
+    });
+    aksi.appendChild(salinPesan);
 
     it.appendChild(aksi);
     it.appendChild(kabar);
     box.appendChild(it);
   });
 }
-
 </script>
 </body>
 </html>
