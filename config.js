@@ -12,7 +12,7 @@ window.MHDC_CONFIG = {
      1) URL Web App Apps Script milik spreadsheet EVENT
      Apps Script > Deploy > Manage deployments > salin "Web app URL"
      ------------------------------------------------------------------ */
-  API_URL: "https://script.google.com/macros/s/AKfycbwX0hcK47RgBU2KU7_VPgDPUnvVZS8GL2461G8Z7pRCG9q1qgDqEwcLTw8KUyCK6htQXw/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbz9TKSx1VB1ae_QKxb_4Lsf1eCBS5QLqtiLDNSH0-RvJM29UXikQgMyILxkrJuqT_Snwg/exec",
 
   /* 2) Alamat halaman rapor event di GitHub Pages. Akhiri dengan '?id=' */
   RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id=",
