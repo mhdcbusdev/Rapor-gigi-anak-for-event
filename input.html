@@ -154,6 +154,12 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
   font-size:13px;margin-bottom:16px}
 .recap div{display:flex;gap:8px;padding:2px 0}
 .recap span:first-child{color:var(--navy-soft);min-width:92px;flex:none}
+.catatan{text-align:left;background:#FFF3D6;border:1px solid var(--yellow);border-left:5px solid var(--yellow);
+  border-radius:10px;padding:12px 13px;font-size:12.5px;line-height:1.55;margin-bottom:16px;color:var(--navy)}
+.catatan #croCek{display:block;margin-top:10px}
+.catatan #croCek a{display:inline-block;background:#25D366;color:#fff;font-weight:800;text-decoration:none;
+  white-space:normal;padding:9px 14px;border-radius:9px;font-size:13px;line-height:1.3}
+.catatan #croCek a:hover{background:#1EBE5A}
 .hide{display:none !important}
 </style>
 </head>
@@ -162,9 +168,13 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
 <div class="overlay hide" id="done">
   <div class="box">
     <div class="tick">&#10003;</div>
-    <h2>Rapor terkirim</h2>
-    <p>Data masuk Google Sheet, dan WhatsApp otomatis dikirim ke nomor orang tua serta PIC event.</p>
+    <h2>Rapor tersimpan</h2>
+    <p>Data sudah masuk ke Google Sheet. <b>Rapor tidak dikirim otomatis</b> &mdash; pengiriman ke orang tua dilakukan manual oleh tim CRO.</p>
     <div class="recap" id="recap"></div>
+    <div class="catatan">
+      <b>Langkah berikutnya:</b> kabari tim CRO untuk mengirim rapor ini ke nomor orang tua.
+      <span id="croCek"></span>
+    </div>
     <button class="btn primary" style="width:100%" id="nextPatient">Isi pasien berikutnya</button>
     <button class="btn ghost" style="width:100%;margin-top:8px" id="resetAll">Mulai dari kosong</button>
   </div>
@@ -257,7 +267,7 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
         <div class="f">
           <label class="req" for="picHp">No HP PIC event</label>
           <input type="tel" id="picHp" data-key="No Hp PIC/ Pengisi" data-req inputmode="numeric" placeholder="0812xxxxxxx">
-          <div class="hint" id="picPrev">Notifikasi dikirim ke: —</div>
+          <div class="hint" id="picPrev">No HP PIC: —</div>
           <div class="err-msg">Wajib diisi.</div>
         </div>
         <div class="f span">
@@ -354,7 +364,7 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
 
 <div class="bar">
   <div class="bar-inner">
-    <div class="status" id="status">Periksa lagi sebelum kirim — WhatsApp langsung terkirim ke orang tua.</div>
+    <div class="status" id="status">Periksa lagi sebelum simpan. Rapor dikirim ke orang tua secara manual oleh CRO.</div>
     <button class="btn ghost" id="drafSimpan">Simpan draft</button>
     <button class="btn primary" id="submitBtn">Kirim rapor gigi</button>
   </div>
@@ -366,24 +376,14 @@ input.bad,select.bad,textarea.bad{border-color:var(--red);background:#FFF7F6}
    ===========================  KONFIGURASI  ============================
    ====================================================================== */
 const CONFIG = {
-
-  // 1) WAJIB DIISI. URL Web App Apps Script (Deploy > Manage deployments).
-  //    Contoh: "https://script.google.com/macros/s/AKfycb..../exec"
   API_URL: "https://script.google.com/macros/s/AKfycby4rE_L1gxRnptV9v8YxIXxE_OVlf_Rc8oMF8MQTy3eXZ_DaAsPeFjpV0n4dQ6UR8cEmQ/exec",
-
-  // 2) Jangan diubah — harus sama dengan tab event di Google Sheet
   FORM_ID: "9be5c3b",
   FORM_NAME: "Form Rapor Gigi Anak for Event",
-
-  // 3) Alamat halaman rapor (index.html) di GitHub Pages.
-  //    WAJIB sama dengan RAPOR_BASE di watzap.gs, dan diakhiri '?id='
   RAPOR_BASE: "https://mhdcbusdev.github.io/Rapor-gigi-anak-for-event/?id="
 };
 
-/* Nilai di atas hanya cadangan. Yang dipakai adalah isi config.js. */
 if(window.MHDC_CONFIG) Object.assign(CONFIG, window.MHDC_CONFIG);
 
-/* config.js wajib termuat. Kalau tidak, semua pengaturan ikut kosong. */
 if(!window.MHDC_CONFIG){
   document.addEventListener("DOMContentLoaded",function(){
     var d=document.createElement("div");
@@ -395,10 +395,6 @@ if(!window.MHDC_CONFIG){
   });
 }
 
-
-// Pilihan tiap field — selalu Bahasa Indonesia.
-// Terjemahan ke Inggris dilakukan di halaman rapor, bukan di sini,
-// supaya isi spreadsheet tetap seragam dengan data lama.
 const OPSI = {
   "Kondisi Gigi Secara Umum":[
     "Kondisi Gigi Baik Sekali","Kondisi Gigi Cukup Baik",
@@ -428,7 +424,6 @@ const OPSI = {
     "Dental Floss","Dental Floss Pick","Sikat Interdental"]
 };
 
-// Penjelasan otomatis untuk kolom Penjelasan_Hidden
 const PENJELASAN = {
   "Kondisi Gigi Baik Sekali":"Gigi anak sangat sehat! Tidak ada masalah seperti gigi berlubang, plak, atau karang gigi. Kebersihan mulut terjaga dengan baik, dan gusi sehat.",
   "Kondisi Gigi Cukup Baik":"Gigi dalam kondisi yang cukup baik, namun ada sedikit plak atau tanda awal gigi berlubang yang perlu diperhatikan agar tidak berkembang lebih lanjut.",
@@ -436,9 +431,6 @@ const PENJELASAN = {
   "Kondisi Gigi Perlu Perhatian":"Gigi perlu perawatan segera. Ada masalah serius seperti gigi berlubang parah, peradangan gusi, atau sisa akar yang bisa menyebabkan komplikasi jika tidak diatasi."
 };
 
-
-// Kolom di Sheet yang sudah tidak dipakai, tetap dikirim kosong supaya
-// urutan kolom tidak bergeser (watzap.gs membaca kolom berdasarkan nomor).
 const KOLOM_KOSONG = [
   "No Label field_7033736","No Label field_327ac6d","Penjelasan","Nama Dokter (termasuk gelar)"
 ];
@@ -452,9 +444,6 @@ const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
 
 if(!CONFIG.API_URL) $("#cfgWarn").classList.remove("hide");
 
-/* ======================================================================
-   NOMOR GIGI  —  penomoran FDI, urutan mengikuti gambar odontogram klinik
-   ====================================================================== */
 const BARIS_GIGI = [
   ["Permanen atas", "18 → 28",
    ["18","17","16","15","14","13","12","11","21","22","23","24","25","26","27","28"]],
@@ -523,11 +512,6 @@ function el(tag,cls,teks){
   return n;
 }
 
-/* ---------- Rapor ID (memakai nama pasien) ----------
-   Bentuknya: 2026-06-03-Rapor-Gigi-Tanahrum-Abdalla-Sasongko-K7M2XQ9F
-   8 huruf di belakang wajib ada supaya pasien dengan nama sama
-   (atau kunjungan kedua di hari yang sama) tidak saling tertukar,
-   dan supaya link orang lain tidak bisa ditebak begitu saja.        */
 let KODE_UNIK="";
 function kodeAcak(n){
   const huruf="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -553,7 +537,6 @@ function updateLinkPrev(){
   $("#linkPrev").textContent = CONFIG.RAPOR_BASE+raporIdSekarang();
 }
 
-/* ---------- tanggal & nomor HP ---------- */
 function hariIniJakarta(){ return new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Jakarta"}); }
 function tambahHari(iso,n){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
 function rapikanNomorHP(v){
@@ -564,8 +547,7 @@ function rapikanNomorHP(v){
   return "62"+s.replace(/^0+/,"");
 }
 
-/* ---------- pilihan bahasa rapor ---------- */
-let BAHASA = "ID";   // hanya menandai bahasa rapor untuk orang tua
+let BAHASA = "ID";
 
 function bangunOpsi(){
   $$(".opts[data-key]").forEach(box=>{
@@ -588,12 +570,10 @@ function setBahasa(kode){
   BAHASA = kode;
   $("#bhsID").setAttribute("aria-pressed", kode==="ID" ? "true" : "false");
   $("#bhsEN").setAttribute("aria-pressed", kode==="EN" ? "true" : "false");
-  // pilihan di form tidak berubah — yang berubah hanya bahasa rapor
 }
 $("#bhsID").addEventListener("click",()=>setBahasa("ID"));
 $("#bhsEN").addEventListener("click",()=>setBahasa("EN"));
 
-/* ---------- radio & checkbox ---------- */
 bangunOpsi();
 $$(".opts[data-key]").forEach(box=>{
   box.addEventListener("change",()=>{
@@ -603,14 +583,12 @@ $$(".opts[data-key]").forEach(box=>{
 });
 function nilaiOpts(box){ return $$("input:checked",box).map(i=>i.value).join(", "); }
 
-/* ---------- preview kecil ---------- */
 $("#hp").addEventListener("input",()=>{
   const n=rapikanNomorHP($("#hp").value);
   $("#hpPrev").textContent="Akan dikirim ke: "+(n||"—");
 });
 function hitungUsia(){
   const teks=$("#lahir").value.trim();
-  // usia hanya bisa dihitung kalau tanggalnya ditulis lengkap
   let v="";
   let m=teks.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if(m) v=teks;
@@ -628,14 +606,13 @@ function hitungUsia(){
 }
 $("#picHp").addEventListener("input",()=>{
   const n=rapikanNomorHP($("#picHp").value);
-  $("#picPrev").textContent="Notifikasi dikirim ke: "+(n||"—");
+  $("#picPrev").textContent="No HP PIC: "+(n||"—");
 });
 $("#lahir").addEventListener("input",hitungUsia);
 $("#periksa").addEventListener("change",hitungUsia);
 $("#nama").addEventListener("input",updateLinkPrev);
 $("#periksa").addEventListener("change",updateLinkPrev);
 
-/* ---------- validasi ---------- */
 function pesanErrDari(el){ const f=el.closest(".f"); return f?$(".err-msg",f):null; }
 function tandaiBeres(el){
   el.classList.remove("bad");
@@ -659,7 +636,6 @@ function validasi(){
   return !pertama;
 }
 
-/* ---------- kumpulkan data ---------- */
 function rapikanNomorGigi(v){ return pecahGigi(v).join(", "); }
 function ambilData(){
   const d={};
@@ -670,7 +646,6 @@ function ambilData(){
     const k=el.dataset.key;
     d[k]= el.classList.contains("opts") ? nilaiOpts(el) : el.value.trim();
   });
-  // hanya kolom gigi yang benar-benar ada di form ini
   $$("[data-gigi]").forEach(w=>{
     const k=w.dataset.gigi;
     if(k in d) d[k]=rapikanNomorGigi(d[k]);
@@ -685,8 +660,6 @@ function ambilData(){
 
 /* ======================================================================
    DRAFT — simpan dulu, lanjutkan nanti
-   Disimpan di tab "Draft Rapor Gigi Event" pada spreadsheet, bukan di
-   browser, jadi tidak hilang kalau halaman ditutup atau ganti perangkat.
    ====================================================================== */
 let DRAFT_ID = "";
 
@@ -799,7 +772,6 @@ async function hapusDraftIni(id, nama, baris){
   }
 }
 
-/* ---------- kirim ---------- */
 const btn=$("#submitBtn");
 btn.addEventListener("click",async()=>{
   if(!CONFIG.API_URL){
@@ -812,7 +784,7 @@ btn.addEventListener("click",async()=>{
 
   const data=ambilData();
   btn.disabled=true; btn.textContent="Mengirim…";
-  $("#status").textContent="Mengirim data ke Google Sheet…";
+  $("#status").textContent="Menyimpan data ke Google Sheet…";
   try{
     const body=new URLSearchParams();
     Object.entries(data).forEach(([k,v])=>body.append(k,v==null?"":v));
@@ -820,7 +792,7 @@ btn.addEventListener("click",async()=>{
     if(DRAFT_ID){ panggilDraft({aksi:"draftHapus", id:DRAFT_ID}); DRAFT_ID=""; }
     tampilkanSukses(data);
   }catch(e){
-    $("#status").textContent="Gagal mengirim. Cek koneksi internet, lalu tekan Kirim lagi.";
+    $("#status").textContent="Gagal menyimpan. Cek koneksi internet, lalu tekan Kirim lagi.";
     btn.disabled=false; btn.textContent="Kirim rapor gigi";
   }
 });
@@ -836,12 +808,26 @@ function tampilkanSukses(d){
     const s2=document.createElement("span"); s2.textContent=b; s2.style.wordBreak="break-all";
     row.append(s1,s2); $("#recap").appendChild(row);
   });
+  var _cro=String(CONFIG.WA_CRO||"6285162717531").replace(/\D/g,"");
+  var _croBox=$("#croCek"); _croBox.innerHTML="";
+  if(_cro){
+    var _teks="Halo CRO, mohon dibantu kirim rapor gigi anak (event) berikut ke orang tua pasien:\n\n"+
+      "Nama: "+(d["Nama Pasien"]||"")+"\n"+
+      "No HP ortu: "+(d["No HP"]||"")+"\n"+
+      "Event: "+(d["Event"]||"")+"\n"+
+      "Bahasa: "+((d["Bahasa"]==="EN")?"English":"Indonesia")+"\n"+
+      "Link rapor: "+link;
+    var _a=document.createElement("a");
+    _a.href="https://wa.me/"+_cro+"?text="+encodeURIComponent(_teks);
+    _a.target="_blank"; _a.rel="noopener";
+    _a.textContent="\uD83D\uDCF2 Info ke CRO sekarang (buka WhatsApp)";
+    _croBox.appendChild(_a);
+  }
   $("#done").classList.remove("hide");
   btn.disabled=false; btn.textContent="Kirim rapor gigi";
-  $("#status").textContent="Data terakhir berhasil dikirim.";
+  $("#status").textContent="Data terakhir berhasil disimpan.";
 }
 
-/* ---------- pasien berikutnya / reset ---------- */
 $("#nextPatient").addEventListener("click",()=>{
   const s={event:$("#event").value,pic:$("#picHp").value,
            dokter:$("#dokter").value,periksa:$("#periksa").value};
@@ -868,11 +854,10 @@ function bersihkan(){
   $("#periksa").value=hariIniJakarta();
   $("#hpPrev").textContent="Akan dikirim ke: —";
   $("#usiaPrev").textContent="Usia: —";
-  $("#picPrev").textContent="Notifikasi dikirim ke: —";
+  $("#picPrev").textContent="No HP PIC: —";
   segarkanRaporId();
 }
 
-/* ---------- nilai awal ---------- */
 $("#periksa").value=hariIniJakarta();
 segarkanRaporId();
 </script>
